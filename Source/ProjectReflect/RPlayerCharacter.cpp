@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "RWeaponComponent.h"
 #include "Components/CapsuleComponent.h"
 
 // Sets default values
@@ -45,6 +46,13 @@ void ARPlayerCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+	}
+
+	if(DefaultWeaponBp)
+	{
+		auto Weapon = GetWorld()->SpawnActor<AActor>(DefaultWeaponBp, GetActorTransform());
+		auto WeaponComponent = Cast<URWeaponComponent>(Weapon->GetComponentByClass(URWeaponComponent::StaticClass()));
+		WeaponComponent->AttachWeapon(this);
 	}
 }
 
