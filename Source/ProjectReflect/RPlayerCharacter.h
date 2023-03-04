@@ -14,6 +14,8 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ACharacter
 
 	ARPlayerCharacter();
 	
+	void AttachDefaultWeapon();
+
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh1P;
 
@@ -26,6 +28,9 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* LookAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
@@ -33,29 +38,32 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ACharacter
 	TSubclassOf<AActor> DefaultWeaponBp;
 
 protected:
+	UPROPERTY()
+	UAnimInstance* AnimInstance;
+	
+	UPROPERTY()
+	APlayerController* PlayerController;
+
+	UPROPERTY()
+	class UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem;
+	
 	virtual void BeginPlay() override;
-
-public:
-		
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
-	bool bHasRifle;
-
-	UFUNCTION(BlueprintCallable, Category = Weapon)
-	void SetHasRifle(bool bNewHasRifle);
-
-	UFUNCTION(BlueprintCallable, Category = Weapon)
-	bool GetHasRifle();
-
-protected:
+	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+	
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
-
 public:
-	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
-	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UAnimMontage* FireAnimation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
+	bool bHasRifle;
+	
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void SetHasRifle(bool bNewHasRifle);
+	
+	void PlayCharacterFireAnimation() const;
+	USkeletalMeshComponent* GetWeaponParentComponent() const;
 };

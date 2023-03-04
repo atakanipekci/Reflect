@@ -15,15 +15,28 @@ class PROJECTREFLECT_API URWeaponComponent : public USkeletalMeshComponent
 	GENERATED_BODY()
 	URWeaponComponent();
 	
+	void SpawnProjectile() const;
+	void PlayCharacterFireAnimation() const;
+
+	UPROPERTY()
+	class ARPlayerCharacter* Character;
+
+protected:
+	UFUNCTION()
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UFUNCTION()
+	virtual void BeginPlay() override;
+
+	UPROPERTY()
+	UWorld* World;
+	
 public:
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
 	TSubclassOf<class ARProjectile> ProjectileClass;
 
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	// USoundBase* FireSound;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	UAnimMontage* FireAnimation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	FVector MuzzleOffset;
@@ -39,11 +52,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
-
-protected:
-	UFUNCTION()
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-private:
-	ARPlayerCharacter* Character;
+	void SetUpActionBindings();
 };
+

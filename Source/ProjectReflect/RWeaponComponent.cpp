@@ -2,7 +2,6 @@
 
 
 #include "RWeaponComponent.h"
-
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "RPlayerCharacter.h"
@@ -15,6 +14,45 @@ URWeaponComponent::URWeaponComponent()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
+void URWeaponComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	World = GetWorld();
+}
+
+void URWeaponComponent::AttachWeapon(ARPlayerCharacter* TargetCharacter)
+{
+	Character = TargetCharacter;
+	if (Character == nullptr)
+	{
+		return;
+	}
+
+	// Attach the weapon to the First Person Character
+	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+	AttachToComponent(Character->GetWeaponParentComponent(), AttachmentRules, FName(TEXT("GripPoint")));
+	
+	// switch bHasRifle so the animation blueprint can switch to another animation set
+	Character->SetHasRifle(true);
+	SetUpActionBindings();
+}
+
+void URWeaponComponent::SetUpActionBindings()
+{
+	if (const auto PlayerController = Cast<APlayerController>(Character->GetController()))
+	{
+		if (const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
+			Subsystem->AddMappingContext(FireMappingContext, 1);
+		}
+
+		if (const auto EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+		{
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &URWeaponComponent::Fire);
+		}
+	}
+}
 
 void URWeaponComponent::Fire()
 {
@@ -23,16 +61,20 @@ void URWeaponComponent::Fire()
 		return;
 	}
 
-	// Try and fire a projectile
-	if (ProjectileClass != nullptr)
+	SpawnProjectile();
+	PlayCharacterFireAnimation();
+}
+
+void URWeaponComponent::SpawnProjectile() const
+{
+	if (ProjectileClass)
 	{
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
+		if (World)
 		{
-			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
-			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+			const auto PlayerController = Cast<APlayerController>(Character->GetController());
+			const auto SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
+			const auto SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
 	
 			//Set Spawn Collision Handling Override
 			FActorSpawnParameters ActorSpawnParams;
@@ -48,49 +90,16 @@ void URWeaponComponent::Fire()
 	// {
 	// 	UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
 	// }
-	
-	// Try and play a firing animation if specified
-	if (FireAnimation != nullptr)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
-		if (AnimInstance != nullptr)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
 }
 
-void URWeaponComponent::AttachWeapon(ARPlayerCharacter* TargetCharacter)
+void URWeaponComponent::PlayCharacterFireAnimation() const
 {
-	Character = TargetCharacter;
 	if (Character == nullptr)
 	{
 		return;
 	}
-
-	// Attach the weapon to the First Person Character
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
 	
-	// switch bHasRifle so the animation blueprint can switch to another animation set
-	Character->SetHasRifle(true);
-
-	// Set up action bindings
-	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
-			Subsystem->AddMappingContext(FireMappingContext, 1);
-		}
-
-		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-		{
-			// Fire
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &URWeaponComponent::Fire);
-		}
-	}
+	Character->PlayCharacterFireAnimation();
 }
 
 void URWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -100,9 +109,9 @@ void URWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		return;
 	}
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
+	if (const auto PlayerController = Cast<APlayerController>(Character->GetController()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->RemoveMappingContext(FireMappingContext);
 		}

@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "RPlayerCharacter.h"
-
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -32,7 +30,6 @@ ARPlayerCharacter::ARPlayerCharacter()
 	Mesh1P->CastShadow = false;
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
-
 }
 
 // Called when the game starts or when spawned
@@ -40,23 +37,39 @@ void ARPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
+	AnimInstance = Mesh1P->GetAnimInstance();
+	PlayerController = Cast<APlayerController>(Controller);
+	EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 
+	EnhancedInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
+
+	AttachDefaultWeapon();
+}
+
+void ARPlayerCharacter::AttachDefaultWeapon()
+{
 	if(DefaultWeaponBp)
 	{
-		auto Weapon = GetWorld()->SpawnActor<AActor>(DefaultWeaponBp, GetActorTransform());
-		auto WeaponComponent = Cast<URWeaponComponent>(Weapon->GetComponentByClass(URWeaponComponent::StaticClass()));
+		const auto Weapon = GetWorld()->SpawnActor<AActor>(DefaultWeaponBp, GetActorTransform());
+		const auto WeaponComponent = Cast<URWeaponComponent>(Weapon->GetComponentByClass(URWeaponComponent::StaticClass()));
 		WeaponComponent->AttachWeapon(this);
 	}
 }
 
-void ARPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+void ARPlayerCharacter::PlayCharacterFireAnimation() const
+{
+	if(AnimInstance)
+	{
+		AnimInstance->Montage_Play(FireAnimation, 1.f);
+	}
+}
+
+USkeletalMeshComponent* ARPlayerCharacter::GetWeaponParentComponent() const
+{
+	return Mesh1P;
+}
+
+void ARPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
@@ -73,11 +86,10 @@ void ARPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	}
 }
 
-
 void ARPlayerCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	auto const MovementVector  = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
 	{
@@ -90,7 +102,7 @@ void ARPlayerCharacter::Move(const FInputActionValue& Value)
 void ARPlayerCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
+	auto const LookAxisVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
 	{
@@ -103,10 +115,5 @@ void ARPlayerCharacter::Look(const FInputActionValue& Value)
 void ARPlayerCharacter::SetHasRifle(bool bNewHasRifle)
 {
 	bHasRifle = bNewHasRifle;
-}
-
-bool ARPlayerCharacter::GetHasRifle()
-{
-	return bHasRifle;
 }
 
