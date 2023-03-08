@@ -4,7 +4,7 @@
 #include "RProjectileWeapon.h"
 
 #include "ProjectReflect/Character/RPlayerCharacter.h"
-#include "ProjectReflect/RProjectile.h"
+#include "ProjectReflect/Projectile/RProjectile.h"
 
 void ARProjectileWeapon::Fire()
 {
@@ -28,8 +28,20 @@ void ARProjectileWeapon::SpawnProjectile() const
 	
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-	
-			GetWorld()->SpawnActor<ARProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+
+			if(auto SpawnedProjectile = GetWorld()->SpawnActor<ARProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams))
+			{
+				SpawnedProjectile->OnProjectileHit.AddDynamic(this, &ARProjectileWeapon::OnProjectileHit);
+			}
 		}
+	}
+}
+
+
+void ARProjectileWeapon::OnProjectileHit(AActor* OtherActor, const FHitResult& Hit)
+{
+	if(OtherActor != nullptr)
+	{
+		UE_LOG(LogStats, Log, TEXT("OnProjectileHit %s"), *OtherActor->GetName());
 	}
 }

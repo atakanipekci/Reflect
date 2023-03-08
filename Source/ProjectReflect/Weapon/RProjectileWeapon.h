@@ -20,6 +20,9 @@ public:
 	UFUNCTION()
 	virtual void SpawnProjectile() const;
 
+	UFUNCTION()
+	void OnProjectileHit(AActor* OtherActor, const FHitResult& Hit);
+
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
 	TSubclassOf<class ARProjectile> ProjectileClass;
 };
