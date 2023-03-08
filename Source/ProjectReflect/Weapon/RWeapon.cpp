@@ -5,7 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "ProjectReflect/RPlayerCharacter.h"
+#include "ProjectReflect/Character/RPlayerCharacter.h"
 
 // Sets default values
 ARWeapon::ARWeapon()
@@ -24,7 +24,6 @@ ARWeapon::ARWeapon()
 void ARWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -38,7 +37,7 @@ void ARWeapon::AttachWeapon(ARPlayerCharacter* TargetCharacter)
 	if(TargetCharacter)
 	{
 		AttachedCharacter = TargetCharacter;
-		this->AttachToComponent(TargetCharacter->GetWeaponParentComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale, "GripPoint");
+		this->AttachToComponent(TargetCharacter->GetWeaponParentComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale, CharacterSocket);
 		SetUpActionBindings();
 		TargetCharacter->SetHasRifle(true);
 	}

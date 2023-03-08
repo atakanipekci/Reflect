@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "RCharacter.h"
 #include "RPlayerCharacter.generated.h"
 
 UCLASS()
-class PROJECTREFLECT_API ARPlayerCharacter : public ACharacter
+class PROJECTREFLECT_API ARPlayerCharacter : public ARCharacter
 {
 	GENERATED_BODY()
 
@@ -35,7 +36,7 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ACharacter
 	UInputAction* MoveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Weapon, meta=(AllowPrivateAccess = "true"))
-	TSubclassOf<AActor> DefaultWeaponBp;
+	TSubclassOf<AActor> DefaultWeaponBP;
 
 protected:
 	UPROPERTY()

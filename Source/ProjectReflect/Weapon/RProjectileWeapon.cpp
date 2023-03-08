@@ -3,7 +3,7 @@
 
 #include "RProjectileWeapon.h"
 
-#include "ProjectReflect/RPlayerCharacter.h"
+#include "ProjectReflect/Character/RPlayerCharacter.h"
 #include "ProjectReflect/RProjectile.h"
 
 void ARProjectileWeapon::Fire()
@@ -26,16 +26,10 @@ void ARProjectileWeapon::SpawnProjectile() const
 			const auto SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 			const auto SpawnLocation = PlayerController->PlayerCameraManager->GetCameraLocation() + SpawnRotation.RotateVector(FVector(200, 0, 0));
 	
-			//Set Spawn Collision Handling Override
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 	
-			// Spawn the projectile at the muzzle
-			AActor* Spawned = GetWorld()->SpawnActor<ARProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			if(Spawned)
-			{
-				
-			}
+			GetWorld()->SpawnActor<ARProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 		}
 	}
 }

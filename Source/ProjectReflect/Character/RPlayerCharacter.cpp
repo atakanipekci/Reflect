@@ -4,9 +4,8 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "RWeaponComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Weapon/RWeapon.h"
+#include "ProjectReflect/Weapon/RWeapon.h"
 
 // Sets default values
 ARPlayerCharacter::ARPlayerCharacter()
@@ -49,9 +48,9 @@ void ARPlayerCharacter::BeginPlay()
 
 void ARPlayerCharacter::AttachDefaultWeapon()
 {
-	if(DefaultWeaponBp)
+	if(DefaultWeaponBP)
 	{
-		const auto Weapon = GetWorld()->SpawnActor<ARWeapon>(DefaultWeaponBp, GetActorTransform());
+		const auto Weapon = GetWorld()->SpawnActor<ARWeapon>(DefaultWeaponBP, GetActorTransform());
 		Weapon->AttachWeapon(this);
 		//const auto WeaponComponent = Cast<URWeaponComponent>(Weapon->GetComponentByClass(URWeaponComponent::StaticClass()));
 		//WeaponComponent->AttachWeapon(this);

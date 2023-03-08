@@ -15,7 +15,6 @@ class PROJECTREFLECT_API ARProjectileWeapon : public ARWeapon
 	GENERATED_BODY()
 	
 public:
-	
 	virtual void Fire() override;
 
 	UFUNCTION()
