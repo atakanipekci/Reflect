@@ -11,7 +11,7 @@ ARProjectile::ARProjectile()
 	InnerCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	InnerCollision->InitSphereRadius(25.0f);
 	InnerCollision->BodyInstance.SetCollisionProfileName(CollisionProfileNames::Projectile);
-	InnerCollision->OnComponentHit.AddDynamic(this, &ARProjectile::OnHit);		// set up a notification for when this component hits something blocking
+	InnerCollision->OnComponentHit.AddDynamic(this, &ARProjectile::OnHit);
 
 	InnerCollision->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
 	InnerCollision->CanCharacterStepUpOn = ECB_No;
@@ -29,22 +29,23 @@ ARProjectile::ARProjectile()
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
 	ProjectileMovement->UpdatedComponent = InnerCollision;
 	ProjectileMovement->InitialSpeed = 3000.f;
+	ProjectileMovement->OnProjectileBounce.AddDynamic(this, &ARProjectile::OnBounce);
+	ProjectileMovement->OnProjectileStop.AddDynamic(this, &ARProjectile::OnStop);
 	ProjectileMovement->MaxSpeed = 3000.f;
 	ProjectileMovement->bShouldBounce = true;
+	ProjectileMovement->Bounciness = 1;
+	ProjectileMovement->Friction = 0;
 	// ProjectileMovement->bRotationFollowsVelocity = true;//creates twitching
 }
 
 void ARProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogStats, Log, TEXT("OnProjectileComponent Hit"));
-	CurrentHitCount++;
+	UE_LOG(LogStats, Log, TEXT("OnProjectile OnHit"));
+	
 
 	OnProjectileHit.Broadcast(OtherActor, Hit);
 	
-	if(HitCountToDestroy != 0 && CurrentHitCount >= HitCountToDestroy)
-	{
-		DestroyProjectile();
-	}
+	
 	// if(GetLifeSpan() <= 0) return;
 	//
 	// if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
@@ -54,6 +55,25 @@ void ARProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrim
 	// 	SetLifeSpan(5);
 	// 	
 	// }
+}
+
+void ARProjectile::OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity)
+{
+	CurrentBounceCount++;
+	UE_LOG(LogStats, Log, TEXT("OnProjectile OnBounce %d"), CurrentBounceCount);
+	
+	OnProjectileBounce.Broadcast(ImpactResult, ImpactVelocity);
+	
+	if(BounceCountToDestroy != 0 && CurrentBounceCount >= BounceCountToDestroy)
+	{
+		DestroyProjectile();
+	}
+	
+}
+void ARProjectile::OnStop(const FHitResult& ImpactResult)
+{
+	UE_LOG(LogStats, Log, TEXT("OnProjectile OnStop"));
+	OnProjectileStop.Broadcast(ImpactResult);
 }
 
 void ARProjectile::DestroyProjectile()

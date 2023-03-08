@@ -6,7 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "RProjectile.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FProjectileHitSignature, AActor*, OtherActor, const FHitResult&, Hit);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FProjectileHitDelegate, AActor*, OtherActor, const FHitResult&, Hit);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FProjectileBounceDelegate, const FHitResult&, ImpactResult, const FVector&, ImpactVelocity);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FProjectileStopDelegate, const FHitResult&, ImpactResult);
+
 UCLASS()
 class PROJECTREFLECT_API ARProjectile : public AActor
 {
@@ -17,6 +20,11 @@ protected:
 
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION()
+	virtual void OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity);
+	UFUNCTION()
+	virtual void OnStop(const FHitResult& ImpactResult);
+	UFUNCTION()
 	virtual void DestroyProjectile();
 	
 	UPROPERTY(VisibleDefaultsOnly, Category = Collision)
@@ -28,13 +36,18 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 	class UProjectileMovementComponent* ProjectileMovement;
 
-	int CurrentHitCount;
-	
+	int CurrentBounceCount;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Projectile)
-	int HitCountToDestroy;
+	int BounceCountToDestroy;
 
 	UPROPERTY(BlueprintCallable, Category = Projectile)
-	FProjectileHitSignature OnProjectileHit;
+	FProjectileHitDelegate OnProjectileHit;
+
+	UPROPERTY(BlueprintAssignable)
+	FProjectileBounceDelegate OnProjectileBounce;
+
+	UPROPERTY(BlueprintAssignable)
+	FProjectileStopDelegate OnProjectileStop;
 };
