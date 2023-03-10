@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "ProjectReflect/Components/RLifeComponent.h"
 #include "RCharacter.generated.h"
 
 UCLASS()
@@ -14,6 +15,12 @@ class PROJECTREFLECT_API ARCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ARCharacter();
+	virtual void PostInitializeComponents() override;
+
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	UFUNCTION()
+	void Death();
 
 protected:
 	// Called when the game starts or when spawned
@@ -26,6 +33,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-private:
+protected:
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	URLifeComponent* LifeComponent;
 };

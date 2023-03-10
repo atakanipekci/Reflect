@@ -8,7 +8,32 @@ ARCharacter::ARCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	LifeComponent = CreateDefaultSubobject<URLifeComponent>(TEXT("Life Component"));
+}
 
+void ARCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	if(LifeComponent)
+	{
+		LifeComponent->HealthReachedZero.AddUObject(this, &ARCharacter::Death);
+	}
+}
+
+float ARCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+                              AActor* DamageCauser)
+{
+	if(LifeComponent == nullptr)
+	{
+		return 0.f;
+	}
+
+	return LifeComponent->TakeDamage(DamageAmount);
+}
+
+void ARCharacter::Death()
+{
+	Destroy();
 }
 
 // Called when the game starts or when spawned
