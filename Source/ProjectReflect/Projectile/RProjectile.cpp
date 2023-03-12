@@ -4,6 +4,7 @@
 #include "RProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "ProjectReflect/Components/ProjectileInteractor/RProjectileInteractorComponent.h"
 #include "ProjectReflect/Utility/CollisionProfileNames.h"
 
 ARProjectile::ARProjectile() 
@@ -41,10 +42,15 @@ ARProjectile::ARProjectile()
 void ARProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogStats, Log, TEXT("OnProjectile OnHit"));
-	
+	if(OtherActor == nullptr)
+	{
+		UE_LOG(LogStats, Log, TEXT("OnProjectile OnHit-->OtherActor is null"));
+	}
 
-	OnProjectileHit.Broadcast(OtherActor, Hit);
+	LastHitInteractorComponent = GetInteractorComponentFromActor(OtherActor);
+	TryInvokeInteractorComponent(LastHitInteractorComponent, Hit);
 	
+	OnProjectileHit.Broadcast(OtherActor, Hit);
 	
 	// if(GetLifeSpan() <= 0) return;
 	//
@@ -57,12 +63,34 @@ void ARProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrim
 	// }
 }
 
+URProjectileInteractorComponent* ARProjectile::GetInteractorComponentFromActor(const AActor* OtherActor) const
+{
+	if(OtherActor)
+	{
+		if(const auto InteractorComponent = Cast<URProjectileInteractorComponent>(OtherActor->GetComponentByClass(URProjectileInteractorComponent::StaticClass())))
+		{
+			return InteractorComponent;
+		}
+	}
+
+	return nullptr;
+}
+
+void ARProjectile::TryInvokeInteractorComponent(URProjectileInteractorComponent* InteractorComponent, const FHitResult& Hit)
+{
+	if(InteractorComponent)
+	{
+		InteractorComponent->OnProjectileHit(this, Hit);
+	}
+}
+
+
 void ARProjectile::OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity)
 {
 	CurrentBounceCount++;
 	UE_LOG(LogStats, Log, TEXT("OnProjectile OnBounce %d"), CurrentBounceCount);
 	
-	OnProjectileBounce.Broadcast(ImpactResult, ImpactVelocity);
+	OnProjectileBounce.Broadcast(LastHitInteractorComponent, LastHitActor,ImpactResult, ImpactVelocity);
 	
 	if(BounceCountToDestroy != 0 && CurrentBounceCount >= BounceCountToDestroy)
 	{
@@ -79,6 +107,11 @@ void ARProjectile::OnStop(const FHitResult& ImpactResult)
 void ARProjectile::DestroyProjectile()
 {
 	Destroy();
+}
+
+UProjectileMovementComponent* ARProjectile::GetProjectileMovementComponent() const
+{
+	return ProjectileMovement;
 }
 
 
