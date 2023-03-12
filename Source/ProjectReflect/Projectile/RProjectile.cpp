@@ -82,6 +82,10 @@ void ARProjectile::TryInvokeInteractorComponent(URProjectileInteractorComponent*
 	{
 		InteractorComponent->OnProjectileHit(this, Hit);
 	}
+	else
+	{
+		DestroyProjectile();
+	}
 }
 
 
