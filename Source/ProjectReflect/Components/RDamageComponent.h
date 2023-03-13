@@ -16,7 +16,9 @@ public:
 	// Sets default values for this component's properties
 	URDamageComponent();
 
-	float DealDamage(AActor* TargetActor) const;
+	float DealDamage(AActor* TargetActor, const FHitResult& HitResult) const;
+
+	void IncreaseDamage(float DamageIncrease) { CurrentDamage += DamageIncrease;}
 
 protected:
 	// Called when the game starts
@@ -30,6 +32,8 @@ public:
 private:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess=true))
 	class URDamageData* DamageData;
+
+	float CurrentDamage = 0;
 
 		
 };

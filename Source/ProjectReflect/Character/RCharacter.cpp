@@ -11,15 +11,6 @@ ARCharacter::ARCharacter()
 	LifeComponent = CreateDefaultSubobject<URLifeComponent>(TEXT("Life Component"));
 }
 
-void ARCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-	if(LifeComponent)
-	{
-		LifeComponent->HealthReachedZero.AddUObject(this, &ARCharacter::Death);
-	}
-}
-
 float ARCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
                               AActor* DamageCauser)
 {
@@ -28,7 +19,7 @@ float ARCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEven
 		return 0.f;
 	}
 
-	return LifeComponent->TakeDamage(DamageAmount);
+	return LifeComponent->TakeDamage(DamageAmount,DamageEvent, EventInstigator, DamageCauser);
 }
 
 void ARCharacter::Death()
@@ -40,7 +31,10 @@ void ARCharacter::Death()
 void ARCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if(LifeComponent)
+	{
+		LifeComponent->HealthReachedZero.AddUObject(this, &ARCharacter::Death);
+	}
 }
 
 // Called every frame

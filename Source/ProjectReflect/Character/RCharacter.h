@@ -15,7 +15,6 @@ class PROJECTREFLECT_API ARCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ARCharacter();
-	virtual void PostInitializeComponents() override;
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 

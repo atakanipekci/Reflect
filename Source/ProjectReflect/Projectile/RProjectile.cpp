@@ -4,6 +4,7 @@
 #include "RProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "ProjectReflect/Components/RDamageComponent.h"
 #include "ProjectReflect/Components/ProjectileInteractor/RProjectileInteractorComponent.h"
 #include "ProjectReflect/Utility/CollisionProfileNames.h"
 
@@ -17,6 +18,8 @@ ARProjectile::ARProjectile()
 	InnerCollision->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
 	InnerCollision->CanCharacterStepUpOn = ECB_No;
 	RootComponent = InnerCollision;
+
+	DamageComponent = CreateDefaultSubobject<URDamageComponent>(TEXT("Damage Component"));
 
 	// OuterCollision = CreateDefaultSubobject<USphereComponent>(TEXT("OuterCollision"));
 	// OuterCollision->InitSphereRadius(50.0f);
@@ -51,6 +54,11 @@ void ARProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrim
 	TryInvokeInteractorComponent(LastHitInteractorComponent, Hit);
 	
 	OnProjectileHit.Broadcast(OtherActor, Hit);
+
+	if(DamageComponent && OtherActor)
+	{
+		DamageComponent->DealDamage(OtherActor, Hit);
+	}
 	
 	// if(GetLifeSpan() <= 0) return;
 	//

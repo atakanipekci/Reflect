@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = Collision)
 	class USphereComponent* InnerCollision;
 
+	UPROPERTY(EditAnywhere)
+	class URDamageComponent* DamageComponent;
+
 	
 
 	// UPROPERTY(VisibleDefaultsOnly, Category = Collision)

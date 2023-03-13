@@ -3,6 +3,8 @@
 
 #include "RLifeComponent.h"
 
+#include "Engine/DamageEvents.h"
+
 // Sets default values for this component's properties
 URLifeComponent::URLifeComponent()
 {
@@ -14,15 +16,28 @@ URLifeComponent::URLifeComponent()
 	CurrentHealth = MaxHealth;
 }
 
-float URLifeComponent::TakeDamage(float DamageAmount)
+float URLifeComponent::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	if(DamageAmount < DamageThreshold)
+	{
+		return 0.f;
+	}
+	
 	float OldHealth = CurrentHealth;
 	CurrentHealth = FMath::Max(0.f, CurrentHealth-DamageAmount);
 
+	bool bDied = false;
+	FHitResult HitResult;
+	FVector HitImpulse;
+	DamageEvent.GetBestHitInfo(GetOwner(),EventInstigator,HitResult,HitImpulse);
+
 	if(FMath::IsNearlyEqual(0.f, CurrentHealth))
 	{
+		bDied = true;
 		HealthReachedZero.Broadcast();
 	}
+	
+	TookDamage.Broadcast(HitResult, bDied);
 
 	return OldHealth-CurrentHealth;
 }

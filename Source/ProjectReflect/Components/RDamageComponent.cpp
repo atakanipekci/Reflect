@@ -16,11 +16,12 @@ URDamageComponent::URDamageComponent()
 	// ...
 }
 
-float URDamageComponent::DealDamage(AActor* TargetActor) const
+float URDamageComponent::DealDamage(AActor* TargetActor, const FHitResult& HitResult) const
 {
-	if(TargetActor && DamageData)
+	if(TargetActor)
 	{
-		return TargetActor->TakeDamage(DamageData->Damage, FDamageEvent(), nullptr, GetOwner());
+		const FPointDamageEvent PointDamage(CurrentDamage,HitResult,FVector::ZeroVector, UDamageType::StaticClass());
+		return TargetActor->TakeDamage(CurrentDamage, PointDamage, nullptr, GetOwner());
 	}
 	
 	return 0.f;
@@ -31,9 +32,10 @@ float URDamageComponent::DealDamage(AActor* TargetActor) const
 void URDamageComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
+	if(DamageData)
+	{
+		CurrentDamage = DamageData->Damage;
+	}
 }
 
 
