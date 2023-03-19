@@ -39,8 +39,6 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ARCharacter
 	TSubclassOf<AActor> DefaultWeaponBP;
 
 protected:
-	UPROPERTY()
-	UAnimInstance* AnimInstance;
 	
 	UPROPERTY()
 	APlayerController* PlayerController;
@@ -56,15 +54,11 @@ protected:
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	UAnimMontage* FireAnimation;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
 	
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetHasRifle(bool bNewHasRifle);
 	
-	void PlayCharacterFireAnimation() const;
 	USkeletalMeshComponent* GetWeaponParentComponent() const;
 };

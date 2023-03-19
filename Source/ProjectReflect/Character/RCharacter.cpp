@@ -51,3 +51,11 @@ void ARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
+void ARCharacter::PlayCharacterFireAnimation() const
+{
+	if(AnimInstance)
+	{
+		AnimInstance->Montage_Play(FireAnimation, 1.f);
+	}
+}
+

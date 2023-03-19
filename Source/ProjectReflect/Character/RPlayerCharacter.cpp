@@ -56,15 +56,6 @@ void ARPlayerCharacter::AttachDefaultWeapon()
 		//WeaponComponent->AttachWeapon(this);
 	}
 }
-
-void ARPlayerCharacter::PlayCharacterFireAnimation() const
-{
-	if(AnimInstance)
-	{
-		AnimInstance->Montage_Play(FireAnimation, 1.f);
-	}
-}
-
 USkeletalMeshComponent* ARPlayerCharacter::GetWeaponParentComponent() const
 {
 	return Mesh1P;
