@@ -5,6 +5,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
+#include "ProjectReflect/Components/RProjectileTrajectoryComponent.h"
+#include "ProjectReflect/Weapon/RProjectileWeapon.h"
 #include "ProjectReflect/Weapon/RWeapon.h"
 
 // Sets default values
@@ -50,8 +52,8 @@ void ARPlayerCharacter::AttachDefaultWeapon()
 {
 	if(DefaultWeaponBP)
 	{
-		const auto Weapon = GetWorld()->SpawnActor<ARWeapon>(DefaultWeaponBP, GetActorTransform());
-		Weapon->AttachWeapon(this);
+		AttachedWeapon = GetWorld()->SpawnActor<ARWeapon>(DefaultWeaponBP, GetActorTransform());
+		AttachedWeapon->AttachWeapon(this);
 		//const auto WeaponComponent = Cast<URWeaponComponent>(Weapon->GetComponentByClass(URWeaponComponent::StaticClass()));
 		//WeaponComponent->AttachWeapon(this);
 	}
@@ -109,3 +111,30 @@ void ARPlayerCharacter::SetHasRifle(bool bNewHasRifle)
 	bHasRifle = bNewHasRifle;
 }
 
+void ARPlayerCharacter::HideTrajectory() const
+{
+	if(AttachedWeapon)
+	{
+		if(const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon))
+		{
+			if(ProjectileWeapon->TrajectoryComponent)
+			{
+				ProjectileWeapon->TrajectoryComponent->ClearTrajectory();
+			}
+		}
+	}
+}
+
+void ARPlayerCharacter::ShowTrajectory() const
+{
+	if(AttachedWeapon)
+	{
+		if(const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon))
+		{
+			if(ProjectileWeapon->TrajectoryComponent)
+			{
+				ProjectileWeapon->TrajectoryComponent->SpawnTrajectorySpline();
+			}
+		}
+	}
+}

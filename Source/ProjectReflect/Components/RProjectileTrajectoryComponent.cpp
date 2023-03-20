@@ -24,7 +24,7 @@ void URProjectileTrajectoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SpawnTrajectorySpline();
+	// SpawnTrajectorySpline();
 }
 
 
@@ -164,11 +164,14 @@ FPredictProjectilePathParams URProjectileTrajectoryComponent::GetMuzzleTrajector
 
 void URProjectileTrajectoryComponent::ClearTrajectory()
 {
-	// if(TrajectorySplineActor == nullptr)
-	// {
-	// 	return;
-	// }
-	// TrajectorySplineActor->ClearNodes();
-	// TrajectorySplineActor->UpdateSpline();
+	if(TrajectorySplineInstance == nullptr)
+	{
+		return;
+	}
+	TrajectorySplineInstance->ClearNodes();
+	TrajectorySplineInstance->UpdateSpline();
+	TrajectorySplineInstance->SetActorHiddenInGame(true);
+	TrajectorySplineInstance->Destroy();
+	TrajectorySplineInstance = nullptr;
 }
 

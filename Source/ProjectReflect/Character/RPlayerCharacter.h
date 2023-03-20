@@ -38,6 +38,9 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ARCharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Weapon, meta=(AllowPrivateAccess = "true"))
 	TSubclassOf<AActor> DefaultWeaponBP;
 
+	UPROPERTY()
+	class ARWeapon* AttachedWeapon;
+
 protected:
 	
 	UPROPERTY()
@@ -59,6 +62,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetHasRifle(bool bNewHasRifle);
-	
+
+	void HideTrajectory() const;
+	void ShowTrajectory() const;
+
 	USkeletalMeshComponent* GetWeaponParentComponent() const;
 };

@@ -7,22 +7,19 @@
 #include "ProjectReflect/Projectile/RProjectile.h"
 #include "RProjectileTrajectoryComponent.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTREFLECT_API URProjectileTrajectoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
 	URProjectileTrajectoryComponent();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
+public:
+	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void SpawnTrajectorySpline();
 	void DrawSpline(FPredictProjectilePathResult ProjectileResult);
@@ -36,5 +33,6 @@ public:
 	
 	UPROPERTY()
 	ARSplineActor* TrajectorySplineInstance;
+	
 		
 };
