@@ -42,31 +42,37 @@ void URProjectileTrajectoryComponent::SpawnTrajectorySpline()
 	{
 		TrajectorySplineInstance = GetWorld()->SpawnActor<ARSplineActor>(TrajectorySplineBP,FVector::ZeroVector,FRotator::ZeroRotator,FActorSpawnParameters{});
 	}
+
+	if(TrajectoryReflectionSplineInstance == nullptr)
+	{
+		TrajectoryReflectionSplineInstance = GetWorld()->SpawnActor<ARSplineActor>(TrajectorySplineBP,FVector::ZeroVector,FRotator::ZeroRotator,FActorSpawnParameters{});
+	}
 	
 	if(TrajectorySplineInstance)
 	{
-		//This line is only here because I did not have any other free assets that I can use as a trajectory mesh
-		//Default Unreal meshes are way too big for trajectory so I scale it down
 		TrajectorySplineInstance->SetActorScale3D(FVector{0.25,0.25,0.25});
 		// TrajectorySplineActor->ClearNodes();
 		// TrajectorySplineActor->SplineMeshMap = TrajectorySplineMap;
 		// TrajectorySplineActor->UpdateSpline();
 		// TrajectorySplineActor->SetReplicates(false);
 	}
+	if(TrajectoryReflectionSplineInstance)
+	{
+		TrajectoryReflectionSplineInstance->SetActorScale3D(FVector{0.25,0.25,0.25});
+	}
 }
 
-void URProjectileTrajectoryComponent::DrawSpline(FPredictProjectilePathResult ProjectileResult)
+void URProjectileTrajectoryComponent::DrawSpline(TArray<FVector> Path)
 {
 	if(TrajectorySplineInstance)
 	{
-		//DRaw from muzzle maybe
 		//ProjectileParams.LaunchVelocity = ProjectileConfig.ProjectileInitialSpeed;
 		TrajectorySplineInstance->SetActorHiddenInGame(true);
 		TrajectorySplineInstance->ClearNodes();
 			
-		for(int i = 0; i < ProjectileResult.PathData.Num(); i++)
+		for(int i = 0; i < Path.Num(); i++)
 		{
-			TrajectorySplineInstance->AddNode(ProjectileResult.PathData[i].Location);
+			TrajectorySplineInstance->AddNode(Path[i]);
 		}
 		TrajectorySplineInstance->UpdateSpline();
 		TrajectorySplineInstance->SetActorHiddenInGame(false);
@@ -75,7 +81,7 @@ void URProjectileTrajectoryComponent::DrawSpline(FPredictProjectilePathResult Pr
 
 void URProjectileTrajectoryComponent::DrawTrajectory(FVector Origin, FVector ShootDir, ARProjectile* ProjectileBP, TArray<TObjectPtr<AActor>> ActorsToIgnore, const FVector& MuzzleLocation, const FRotator& MuzzleRotation)
 {
-	if(ProjectileBP)
+	if(ProjectileBP && TrajectorySplineInstance)
 	{
 		FPredictProjectilePathResult ProjectileResult;
 
@@ -89,16 +95,36 @@ void URProjectileTrajectoryComponent::DrawTrajectory(FVector Origin, FVector Sho
 
 		if(auto ActorHit = ProjectileResult.HitResult.GetActor())
 		{
-			// UE_LOG(LogTemp, Warning, TEXT("Trajectory HIT ACTOR %s "), *ActorHit->GetName());
-			auto MuzzleProjectileParams = GetMuzzleTrajectoryParams(ProjectileResult.HitResult.Location, MuzzleLocation, MuzzleRotation, Radius, ActorsToIgnore, GravityZ);
-			FPredictProjectilePathResult ProjectileResultFromMuzzle;
-			
-			UGameplayStatics::PredictProjectilePath(GetWorld(), MuzzleProjectileParams, ProjectileResultFromMuzzle);
+			auto Path = TArray<FVector>();
+			Path.Add(MuzzleLocation);
+			Path.Add(ProjectileResult.HitResult.Location);
+			DrawSpline(Path);
 
-			if(auto ActorHitFromMuzzle = ProjectileResultFromMuzzle.HitResult.GetActor())
+			auto ReflectionVector = FMath::GetReflectionVector(LaunchVelocity, ProjectileResult.HitResult.Normal);
+				
+			auto ReflectParams = GetMainTrajectoryParams(ProjectileResult.HitResult.Location, ReflectionVector, Radius, ActorsToIgnore, GravityZ);
+
+			FPredictProjectilePathResult ReflectResult;
+			ReflectParams.ActorsToIgnore.Add(ProjectileResult.HitResult.GetActor());
+			UGameplayStatics::PredictProjectilePath(GetWorld(), ReflectParams, ReflectResult);
+
+			if(ReflectResult.HitResult.GetActor())
 			{
-				DrawSpline(ProjectileResultFromMuzzle);
-				// UE_LOG(LogTemp, Warning, TEXT("Muzzle HIT ACTOR %s "), *ActorHitFromMuzzle->GetName());
+				UE_LOG(LogTemp, Warning, TEXT("Reflection HitActor %s "), *ReflectResult.HitResult.GetActor()->GetName());
+			}
+			// DrawSpline(ReflectResult);
+			if(TrajectoryReflectionSplineInstance)
+			{
+				//ProjectileParams.LaunchVelocity = ProjectileConfig.ProjectileInitialSpeed;
+				TrajectoryReflectionSplineInstance->SetActorHiddenInGame(true);
+				TrajectoryReflectionSplineInstance->ClearNodes();
+			
+				for(int i = 0; i < ReflectResult.PathData.Num(); i++)
+				{
+					TrajectoryReflectionSplineInstance->AddNode(ReflectResult.PathData[i].Location);
+				}
+				TrajectoryReflectionSplineInstance->UpdateSpline();
+				TrajectoryReflectionSplineInstance->SetActorHiddenInGame(false);
 			}
 		}
 	}
