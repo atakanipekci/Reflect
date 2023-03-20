@@ -121,6 +121,11 @@ void ARProjectile::DestroyProjectile()
 	Destroy();
 }
 
+float ARProjectile::GetRadius()
+{
+	return InnerCollision->GetScaledSphereRadius();
+}
+
 UProjectileMovementComponent* ARProjectile::GetProjectileMovementComponent() const
 {
 	return ProjectileMovement;

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStaticsTypes.h"
 #include "RProjectile.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FProjectileHitDelegate, AActor*, OtherActor, const FHitResult&, Hit);
@@ -67,4 +69,7 @@ public:
 
 	UFUNCTION()
 	virtual void DestroyProjectile();
+
+	UFUNCTION()
+	float GetRadius();
 };

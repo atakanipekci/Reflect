@@ -43,12 +43,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	FName CharacterSocket = "GripPoint";
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	FName MuzzleSocket = "Muzzle";
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* SkeletalMesh;
 
 	UPROPERTY()
-	class ARPlayerCharacter* AttachedCharacter = nullptr;
+	class ARPlayerCharacter* AttachedCharacter;
+
+	UPROPERTY()
+	class APlayerController* PlayerController;
 
 private:
 	UPROPERTY()

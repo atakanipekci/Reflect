@@ -38,8 +38,10 @@ void ARWeapon::AttachWeapon(ARPlayerCharacter* TargetCharacter)
 	{
 		AttachedCharacter = TargetCharacter;
 		this->AttachToComponent(TargetCharacter->GetWeaponParentComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale, CharacterSocket);
-		SetUpActionBindings();
+		PlayerController = Cast<APlayerController>(AttachedCharacter->GetController());
 		TargetCharacter->SetHasRifle(true);
+
+		SetUpActionBindings();
 	}
 }
 
@@ -50,8 +52,7 @@ void ARWeapon::SetUpActionBindings()
 		return;
 	}
 	
-	ARPlayerCharacter* PlayerOwner = Cast<ARPlayerCharacter>(AttachedCharacter);
-	if (const auto PlayerController = Cast<APlayerController>(PlayerOwner->GetController()))
+	if (PlayerController)
 	{
 		if (const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
