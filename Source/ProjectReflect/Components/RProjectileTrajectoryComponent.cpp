@@ -47,7 +47,7 @@ void URProjectileTrajectoryComponent::SpawnTrajectorySpline()
 	{
 		//This line is only here because I did not have any other free assets that I can use as a trajectory mesh
 		//Default Unreal meshes are way too big for trajectory so I scale it down
-		TrajectorySplineInstance->SetActorScale3D(FVector{0.05,0.05,0.05});
+		TrajectorySplineInstance->SetActorScale3D(FVector{0.25,0.25,0.25});
 		// TrajectorySplineActor->ClearNodes();
 		// TrajectorySplineActor->SplineMeshMap = TrajectorySplineMap;
 		// TrajectorySplineActor->UpdateSpline();
