@@ -17,8 +17,16 @@ void URBounceBehaviorModifierComponent::ApplyBehavior(ARProjectile* Projectile, 
 	UE_LOG(LogStats, Log, TEXT("BounceBehaviorModifier ApplyBehavior"));
 	if(const auto MovementComp = Projectile->GetProjectileMovementComponent())
 	{
-		const auto Lenght = MovementComp->Velocity.Length();
-		MovementComp->Velocity = Hit.Normal*Lenght;
+		const auto NewDir = GetBounceDir(MovementComp->Velocity, Hit);
+		if(NewDir != FVector::Zero())
+		{
+			MovementComp->Velocity = NewDir;
+		}
 	}
+}
+
+FVector URBounceBehaviorModifierComponent::GetBounceDir(FVector Velocity, const FHitResult& Hit)
+{
+	return Hit.Normal * Velocity.Length();
 }
 

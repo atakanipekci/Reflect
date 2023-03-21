@@ -4,6 +4,7 @@
 #include "RProjectileTrajectoryComponent.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "ProjectileInteractor/RProjectileInteractorComponent.h"
 #include "ProjectReflect/Projectile/RProjectile.h"
 #include "ProjectReflect/Utility/CollisionProfileNames.h"
 #include "ProjectReflect/Utility/RSplineActor.h"
@@ -42,31 +43,26 @@ void URProjectileTrajectoryComponent::SpawnTrajectorySpline()
 
 void URProjectileTrajectoryComponent::DrawTrajectorySplineFromWeapon(TArray<FVector> Path) const
 {
-	if(TrajectorySplineInstance)
-	{
-		TrajectorySplineInstance->ClearNodes();
-			
-		for(int i = 0; i < Path.Num(); i++)
-		{
-			TrajectorySplineInstance->AddNode(Path[i]);
-		}
-		TrajectorySplineInstance->UpdateSpline();
-		TrajectorySplineInstance->SetActorHiddenInGame(false);
-	}
+	DrawTrajectorySplineFromPath(TrajectorySplineInstance, Path);
 }
 
 void URProjectileTrajectoryComponent::DrawTrajectorySplineFromReflection(TArray<FVector> Path) const
 {
-	if(TrajectoryReflectionSplineInstance)
+	DrawTrajectorySplineFromPath(TrajectoryReflectionSplineInstance, Path);
+}
+
+void URProjectileTrajectoryComponent::DrawTrajectorySplineFromPath(ARSplineActor* Spline, TArray<FVector> Path) const
+{
+	if(Spline)
 	{
-		TrajectoryReflectionSplineInstance->ClearNodes();
+		Spline->ClearNodes();
 			
 		for(int i = 0; i < Path.Num(); i++)
 		{
-			TrajectoryReflectionSplineInstance->AddNode(Path[i]);
+			Spline->AddNode(Path[i]);
 		}
-		TrajectoryReflectionSplineInstance->UpdateSpline();
-		TrajectoryReflectionSplineInstance->SetActorHiddenInGame(false);
+		Spline->UpdateSpline();
+		Spline->SetActorHiddenInGame(false);
 	}
 }
 
@@ -92,27 +88,47 @@ void URProjectileTrajectoryComponent::DrawTrajectory(FVector Origin, FVector Sho
 			DrawTrajectorySplineFromWeapon(Path);
 		}
 		
-		if(ProjectileResult.HitResult.GetActor())
+		if(auto HitActor = ProjectileResult.HitResult.GetActor())
 		{
-			auto ReflectionVector = FMath::GetReflectionVector(LaunchVelocity, ProjectileResult.HitResult.Normal);
-			auto ReflectParams = GetTrajectoryParams(ProjectileResult.HitResult.Location, ReflectionVector, Radius, ActorsToIgnore, GravityZ, 0.5f);
-
-			FPredictProjectilePathResult ReflectResult;
-			ReflectParams.ActorsToIgnore.Add(ProjectileResult.HitResult.GetActor());
-			UGameplayStatics::PredictProjectilePath(GetWorld(), ReflectParams, ReflectResult);
-
-			auto ReflectPath = TArray<FVector>();
-			for (int i = 0; i < ReflectResult.PathData.Num(); ++i)
+			if(auto ProjectileInteractionComp = GetInteractorComponentFromActor(HitActor))
 			{
-				ReflectPath.Add(ReflectResult.PathData[i].Location);
+				auto BounceDir = ProjectileInteractionComp->GetBounceDir(LaunchVelocity, ProjectileResult.HitResult);
+				if(BounceDir == FVector::Zero())
+				{
+					BounceDir = FMath::GetReflectionVector(LaunchVelocity, ProjectileResult.HitResult.Normal);
+				}
+				
+				auto ReflectParams = GetTrajectoryParams(ProjectileResult.HitResult.Location, BounceDir, Radius, ActorsToIgnore, GravityZ, 0.5f);
+
+				FPredictProjectilePathResult ReflectResult;
+				ReflectParams.ActorsToIgnore.Add(ProjectileResult.HitResult.GetActor());
+				UGameplayStatics::PredictProjectilePath(GetWorld(), ReflectParams, ReflectResult);
+
+				auto ReflectPath = TArray<FVector>();
+				for (int i = 0; i < ReflectResult.PathData.Num(); ++i)
+				{
+					ReflectPath.Add(ReflectResult.PathData[i].Location);
+				}
+				DrawTrajectorySplineFromReflection(ReflectPath);
+				return;
 			}
-			DrawTrajectorySplineFromReflection(ReflectPath);
 		}
-		else
+
+		DisableSplineFromReflection();
+	}
+}
+
+URProjectileInteractorComponent* URProjectileTrajectoryComponent::GetInteractorComponentFromActor(const AActor* OtherActor) const
+{
+	if(OtherActor)
+	{
+		if(const auto InteractorComponent = Cast<URProjectileInteractorComponent>(OtherActor->GetComponentByClass(URProjectileInteractorComponent::StaticClass())))
 		{
-			DisableSplineFromReflection();
+			return InteractorComponent;
 		}
 	}
+
+	return nullptr;
 }
 
 FPredictProjectilePathParams URProjectileTrajectoryComponent::GetTrajectoryParams(FVector StartLocation, FVector Velocity, float Radius, TArray<TObjectPtr<AActor>> ActorsToIgnore, float Gravity, float SimTime)

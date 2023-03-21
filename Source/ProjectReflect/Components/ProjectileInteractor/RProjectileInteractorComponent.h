@@ -33,4 +33,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnProjectileHit(ARProjectile* Projectile, const FHitResult& Hit);
+
+	UFUNCTION(BlueprintCallable)
+	virtual FVector GetBounceDir(FVector Velocity, const FHitResult& Hit);
 };

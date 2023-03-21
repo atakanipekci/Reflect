@@ -17,6 +17,7 @@ public:
 	URBounceBehaviorModifierComponent();
 
 	virtual void ApplyBehavior(ARProjectile* Projectile, const FHitResult& Hit) override;
+	virtual FVector GetBounceDir(FVector Velocity, const FHitResult& Hit);
 
 	UPROPERTY(EditAnywhere, Category = Properties)
 	bool bModifyGravityOnHit;

@@ -3,6 +3,7 @@
 
 #include "RProjectileInteractorComponent.h"
 
+#include "RBounceBehaviorModifierComponent.h"
 #include "ProjectReflect/Components/ProjectileInteractor/RProjectileBehaviorModifier.h"
 #include "ProjectReflect/Projectile/RProjectile.h"
 
@@ -59,5 +60,18 @@ void URProjectileInteractorComponent::OnProjectileHit(ARProjectile* Projectile, 
 			Modifier->ApplyBehavior(Projectile, Hit);
 		}
 	}
+}
+
+FVector URProjectileInteractorComponent::GetBounceDir(FVector Velocity, const FHitResult& Hit)
+{
+	for (const auto Modifier : BehaviorModifiers)
+	{
+		if(const auto BounceModifier = Cast<URBounceBehaviorModifierComponent>(Modifier))
+		{
+			return BounceModifier->GetBounceDir(Velocity, Hit);
+		}
+	}
+
+	return FVector::Zero();
 }
 

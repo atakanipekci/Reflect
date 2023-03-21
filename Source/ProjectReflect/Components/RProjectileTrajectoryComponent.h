@@ -17,12 +17,14 @@ class PROJECTREFLECT_API URProjectileTrajectoryComponent : public UActorComponen
 public:
 	
 	void SpawnTrajectorySpline();
+	void DrawTrajectorySplineFromPath(class ARSplineActor* Spline, TArray<FVector> Path) const;
 	void DrawTrajectorySplineFromWeapon(TArray<FVector> Path) const;
 	void DrawTrajectorySplineFromReflection(TArray<FVector> Path) const;
 	void DrawTrajectory(FVector Origin, FVector ShootDir, ARProjectile* ProjectileBp, TArray<TObjectPtr<AActor>> ActorsToIgnore, const FVector& MuzzleLocation, const FRotator& MuzzleRotation);
 	void ClearTrajectory();
 	void DisableSplineFromWeapon() const;
 	void DisableSplineFromReflection() const;
+	URProjectileInteractorComponent* GetInteractorComponentFromActor(const AActor* OtherActor) const;
 	FPredictProjectilePathParams GetTrajectoryParams(FVector StartLocation, FVector Velocity, float Radius, TArray<TObjectPtr<AActor>> ActorsToIgnore, float Gravity, float SimTime);
 
 	UPROPERTY(EditAnywhere)
