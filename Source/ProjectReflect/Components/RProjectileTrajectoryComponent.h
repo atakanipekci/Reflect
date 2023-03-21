@@ -14,19 +14,16 @@ class PROJECTREFLECT_API URProjectileTrajectoryComponent : public UActorComponen
 
 	URProjectileTrajectoryComponent();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
 public:
 	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void SpawnTrajectorySpline();
-	void DrawSpline(TArray<FVector> Path);
+	void DrawTrajectorySplineFromWeapon(TArray<FVector> Path) const;
+	void DrawTrajectorySplineFromReflection(TArray<FVector> Path) const;
 	void DrawTrajectory(FVector Origin, FVector ShootDir, ARProjectile* ProjectileBp, TArray<TObjectPtr<AActor>> ActorsToIgnore, const FVector& MuzzleLocation, const FRotator& MuzzleRotation);
 	void ClearTrajectory();
-	FPredictProjectilePathParams GetMainTrajectoryParams(FVector StartLocation, FVector Velocity, float Radius, TArray<TObjectPtr<AActor>> ActorsToIgnore, float Gravity);
-	FPredictProjectilePathParams GetMuzzleTrajectoryParams(FVector EndLocation, FVector MuzzleLocation, FRotator MuzzleRotation, float Radius, TArray<TObjectPtr<AActor>> ActorsToIgnore, float Gravity);
+	void DisableSplineFromWeapon() const;
+	void DisableSplineFromReflection() const;
+	FPredictProjectilePathParams GetTrajectoryParams(FVector StartLocation, FVector Velocity, float Radius, TArray<TObjectPtr<AActor>> ActorsToIgnore, float Gravity, float SimTime);
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ARSplineActor> TrajectorySplineBP;
@@ -35,6 +32,4 @@ public:
 	ARSplineActor* TrajectorySplineInstance;
 	UPROPERTY()
 	ARSplineActor* TrajectoryReflectionSplineInstance;
-	
-		
 };
