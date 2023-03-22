@@ -2,9 +2,6 @@
 
 
 #include "RWeapon.h"
-
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "ProjectReflect/Character/RPlayerCharacter.h"
 
 // Sets default values
@@ -30,41 +27,6 @@ void ARWeapon::BeginPlay()
 void ARWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void ARWeapon::AttachWeapon(ARPlayerCharacter* TargetCharacter)
-{
-	if(TargetCharacter)
-	{
-		AttachedCharacter = TargetCharacter;
-		this->AttachToComponent(TargetCharacter->GetWeaponParentComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale, CharacterSocket);
-		PlayerController = Cast<APlayerController>(AttachedCharacter->GetController());
-		TargetCharacter->SetHasRifle(true);
-
-		SetUpActionBindings();
-	}
-}
-
-void ARWeapon::SetUpActionBindings()
-{
-	if(AttachedCharacter == nullptr)
-	{
-		return;
-	}
-	
-	if (PlayerController)
-	{
-		if (const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
-			Subsystem->AddMappingContext(FireMappingContext, 1);
-		}
-
-		if (const auto EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-		{
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &ARWeapon::Fire);
-		}
-	}
 }
 
 

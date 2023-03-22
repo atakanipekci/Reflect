@@ -16,6 +16,8 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ARCharacter
 	ARPlayerCharacter();
 	
 	void AttachDefaultWeapon();
+	void AddFireMappingContext();
+	void AttachWeapon(class ARWeapon* Weapon);
 
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh1P;
@@ -27,6 +29,9 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ARCharacter
 	class UInputMappingContext* DefaultMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputMappingContext* FireMappingContext;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* JumpAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -35,11 +40,17 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ARCharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* FireAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Weapon, meta=(AllowPrivateAccess = "true"))
 	TSubclassOf<AActor> DefaultWeaponBP;
 
 	UPROPERTY()
-	class ARWeapon* AttachedWeapon;
+	ARWeapon* AttachedWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	FName CharacterSocket = "GripPoint";
 
 protected:
 	
@@ -54,15 +65,17 @@ protected:
 	
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void Fire();
 
 public:
-
+	
+	//TODO GET Rid of these
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
-	
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetHasRifle(bool bNewHasRifle);
-
+	//
+	
 	void HideTrajectory() const;
 	void ShowTrajectory() const;
 

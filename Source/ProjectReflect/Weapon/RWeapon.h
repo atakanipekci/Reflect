@@ -19,29 +19,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	virtual void Fire() PURE_VIRTUAL(Fire,) ;
+	virtual void Fire(FVector Location, FRotator Rotation) PURE_VIRTUAL(Fire,);
 
 	UFUNCTION()
 	virtual void SecondaryFire() {/*Empty cause optional*/}
-
-	UFUNCTION(BlueprintCallable, Category="Weapon")
-	void AttachWeapon(class ARPlayerCharacter* TargetCharacter);
-
-	void SetUpActionBindings();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputMappingContext* FireMappingContext;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* FireAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	FName CharacterSocket = "GripPoint";
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	FName MuzzleSocket = "Muzzle";
@@ -49,12 +36,6 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* SkeletalMesh;
-
-	UPROPERTY()
-	class ARPlayerCharacter* AttachedCharacter;
-
-	UPROPERTY()
-	class APlayerController* PlayerController;
 
 private:
 	UPROPERTY()

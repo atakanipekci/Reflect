@@ -18,14 +18,11 @@ class PROJECTREFLECT_API ARProjectileWeapon : public ARWeapon
 public:
 	ARProjectileWeapon();
 	
-	virtual void Fire() override;
-	FRotator GetProjectileSpawnRotation() const;
-	FVector GetProjectileSpawnLocation(FRotator SpawnRotation) const;
+	virtual void Fire(FVector Location, FRotator Rotation) override;
 
 	UFUNCTION()
-	virtual void SpawnProjectile() const;
+	virtual void SpawnProjectile(FVector Location, FRotator Rotation) const;
 
-	
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
 
@@ -34,7 +31,4 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
 	TSubclassOf<class ARProjectile> ProjectileClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class URProjectileTrajectoryComponent* TrajectoryComponent;
 };

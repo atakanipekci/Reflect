@@ -52,12 +52,36 @@ void ARPlayerCharacter::AttachDefaultWeapon()
 {
 	if(DefaultWeaponBP)
 	{
-		AttachedWeapon = GetWorld()->SpawnActor<ARWeapon>(DefaultWeaponBP, GetActorTransform());
-		AttachedWeapon->AttachWeapon(this);
-		//const auto WeaponComponent = Cast<URWeaponComponent>(Weapon->GetComponentByClass(URWeaponComponent::StaticClass()));
-		//WeaponComponent->AttachWeapon(this);
+		const auto SpawnedWeapon = GetWorld()->SpawnActor<ARWeapon>(DefaultWeaponBP, GetActorTransform());
+		AttachWeapon(SpawnedWeapon);
 	}
 }
+
+void ARPlayerCharacter::AddFireMappingContext()
+{
+	if (PlayerController)
+	{
+		if (const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
+			Subsystem->AddMappingContext(FireMappingContext, 1);
+		}
+	}
+}
+
+void ARPlayerCharacter::AttachWeapon(ARWeapon* Weapon)
+{
+	if(Weapon)
+	{
+		AttachedWeapon = Weapon;
+		Weapon->AttachToComponent(GetWeaponParentComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale, CharacterSocket);
+		SetHasRifle(true);
+
+		//TODO remove mapping context on weapon detach
+		AddFireMappingContext();
+	}
+}
+
 USkeletalMeshComponent* ARPlayerCharacter::GetWeaponParentComponent() const
 {
 	return Mesh1P;
@@ -77,6 +101,8 @@ void ARPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ARPlayerCharacter::Look);
+
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &ARPlayerCharacter::Fire);
 	}
 }
 
@@ -106,6 +132,23 @@ void ARPlayerCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void ARPlayerCharacter::Fire()
+{
+	if(AttachedWeapon)
+	{
+		PlayCharacterFireAnimation();
+
+		//TODO change calculation
+		if(PlayerController && PlayerController->PlayerCameraManager)
+		{
+			const auto SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+			const auto SpawnLocation = PlayerController->PlayerCameraManager->GetCameraLocation() + SpawnRotation.RotateVector(FVector(200, 0, 0));
+			
+			AttachedWeapon->Fire(SpawnLocation, SpawnRotation);
+		}
+	}
+}
+
 void ARPlayerCharacter::SetHasRifle(bool bNewHasRifle)
 {
 	bHasRifle = bNewHasRifle;
@@ -113,28 +156,28 @@ void ARPlayerCharacter::SetHasRifle(bool bNewHasRifle)
 
 void ARPlayerCharacter::HideTrajectory() const
 {
-	if(AttachedWeapon)
-	{
-		if(const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon))
-		{
-			if(ProjectileWeapon->TrajectoryComponent)
-			{
-				ProjectileWeapon->TrajectoryComponent->ClearTrajectory();
-			}
-		}
-	}
+	// if(AttachedWeapon)
+	// {
+	// 	if(const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon))
+	// 	{
+	// 		if(ProjectileWeapon->TrajectoryComponent)
+	// 		{
+	// 			ProjectileWeapon->TrajectoryComponent->ClearTrajectory();
+	// 		}
+	// 	}
+	// }
 }
 
 void ARPlayerCharacter::ShowTrajectory() const
 {
-	if(AttachedWeapon)
-	{
-		if(const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon))
-		{
-			if(ProjectileWeapon->TrajectoryComponent)
-			{
-				ProjectileWeapon->TrajectoryComponent->SpawnTrajectorySpline();
-			}
-		}
-	}
+	// if(AttachedWeapon)
+	// {
+	// 	if(const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon))
+	// 	{
+	// 		if(ProjectileWeapon->TrajectoryComponent)
+	// 		{
+	// 			ProjectileWeapon->TrajectoryComponent->SpawnTrajectorySpline();
+	// 		}
+	// 	}
+	// }
 }
