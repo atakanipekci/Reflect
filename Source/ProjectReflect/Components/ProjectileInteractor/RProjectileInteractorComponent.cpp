@@ -2,24 +2,14 @@
 
 
 #include "RProjectileInteractorComponent.h"
-
-#include "RBounceBehaviorModifierComponent.h"
 #include "ProjectReflect/Components/ProjectileInteractor/RProjectileBehaviorModifier.h"
 #include "ProjectReflect/Projectile/RProjectile.h"
 
 
-// Sets default values for this component's properties
 URProjectileInteractorComponent::URProjectileInteractorComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	
 }
 
-
-// Called when the game starts
 void URProjectileInteractorComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -37,16 +27,6 @@ void URProjectileInteractorComponent::BeginPlay()
 			}
 		} 
 	}
-	
-}
-
-
-// Called every frame
-void URProjectileInteractorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 void URProjectileInteractorComponent::OnProjectileHit(ARProjectile* Projectile, const FHitResult& Hit)
@@ -64,14 +44,17 @@ void URProjectileInteractorComponent::OnProjectileHit(ARProjectile* Projectile, 
 
 FVector URProjectileInteractorComponent::GetBounceDir(FVector Velocity, const FHitResult& Hit)
 {
+	if(BehaviorModifiers.Num() <= 0)
+	{
+		return FMath::GetReflectionVector(Velocity, Hit.Normal);
+	}
+	
+	auto VecToModify = Velocity;
 	for (const auto Modifier : BehaviorModifiers)
 	{
-		if(const auto BounceModifier = Cast<URBounceBehaviorModifierComponent>(Modifier))
-		{
-			return BounceModifier->GetBounceDir(Velocity, Hit);
-		}
+		VecToModify = Modifier->GetBounceDir(VecToModify, Hit);
 	}
 
-	return FVector::Zero();
+	return VecToModify;
 }
 

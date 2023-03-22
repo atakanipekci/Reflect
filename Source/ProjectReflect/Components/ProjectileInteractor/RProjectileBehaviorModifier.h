@@ -13,4 +13,6 @@ class PROJECTREFLECT_API URProjectileBehaviorModifier : public UActorComponent
 public:
 	UFUNCTION(BlueprintCallable)
 	virtual void ApplyBehavior(class ARProjectile* Projectile, const FHitResult& Hit);
+	UFUNCTION(BlueprintCallable)
+	virtual FVector GetBounceDir(FVector Velocity, const FHitResult& Hit);
 };

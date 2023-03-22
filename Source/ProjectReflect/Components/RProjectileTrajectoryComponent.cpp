@@ -93,11 +93,6 @@ void URProjectileTrajectoryComponent::DrawTrajectory(FVector Origin, FVector Sho
 			if(auto ProjectileInteractionComp = GetInteractorComponentFromActor(HitActor))
 			{
 				auto BounceDir = ProjectileInteractionComp->GetBounceDir(LaunchVelocity, ProjectileResult.HitResult);
-				if(BounceDir == FVector::Zero())
-				{
-					BounceDir = FMath::GetReflectionVector(LaunchVelocity, ProjectileResult.HitResult.Normal);
-				}
-				
 				auto ReflectParams = GetTrajectoryParams(ProjectileResult.HitResult.Location, BounceDir, Radius, ActorsToIgnore, GravityZ, 0.5f);
 
 				FPredictProjectilePathResult ReflectResult;

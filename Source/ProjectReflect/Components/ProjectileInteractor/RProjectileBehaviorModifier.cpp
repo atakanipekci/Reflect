@@ -7,3 +7,8 @@ void URProjectileBehaviorModifier::ApplyBehavior(ARProjectile* Projectile, const
 {
 	
 }
+
+FVector URProjectileBehaviorModifier::GetBounceDir(FVector Velocity, const FHitResult& Hit)
+{
+	return Velocity;
+}
