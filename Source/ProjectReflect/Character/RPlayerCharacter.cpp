@@ -37,24 +37,13 @@ ARPlayerCharacter::ARPlayerCharacter()
 // Called when the game starts or when spawned
 void ARPlayerCharacter::BeginPlay()
 {
-	Super::BeginPlay();
 
 	AnimInstance = Mesh1P->GetAnimInstance();
 	PlayerController = Cast<APlayerController>(Controller);
 	EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-
 	EnhancedInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
-
-	AttachDefaultWeapon();
-}
-
-void ARPlayerCharacter::AttachDefaultWeapon()
-{
-	if(DefaultWeaponBP)
-	{
-		const auto SpawnedWeapon = GetWorld()->SpawnActor<ARWeapon>(DefaultWeaponBP, GetActorTransform());
-		AttachWeapon(SpawnedWeapon);
-	}
+	
+	Super::BeginPlay();
 }
 
 void ARPlayerCharacter::AddFireMappingContext()
@@ -69,22 +58,17 @@ void ARPlayerCharacter::AddFireMappingContext()
 	}
 }
 
-void ARPlayerCharacter::AttachWeapon(ARWeapon* Weapon)
+void ARPlayerCharacter::AttachWeapon(ARWeapon* Weapon, const FName& Socket)
 {
 	if(Weapon)
 	{
+		Super::AttachWeapon(Weapon, Socket);
 		AttachedWeapon = Weapon;
-		Weapon->AttachToComponent(GetWeaponParentComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale, CharacterSocket);
 		SetHasRifle(true);
 
 		//TODO remove mapping context on weapon detach
 		AddFireMappingContext();
 	}
-}
-
-USkeletalMeshComponent* ARPlayerCharacter::GetWeaponParentComponent() const
-{
-	return Mesh1P;
 }
 
 void ARPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

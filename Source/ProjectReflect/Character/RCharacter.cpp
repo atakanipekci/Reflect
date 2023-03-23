@@ -3,6 +3,8 @@
 
 #include "RCharacter.h"
 
+#include "ProjectReflect/Weapon/RWeapon.h"
+
 // Sets default values
 ARCharacter::ARCharacter()
 {
@@ -35,6 +37,8 @@ void ARCharacter::BeginPlay()
 	{
 		LifeComponent->HealthReachedZero.AddUObject(this, &ARCharacter::Death);
 	}
+
+	AttachDefaultWeapon();
 }
 
 // Called every frame
@@ -56,6 +60,23 @@ void ARCharacter::PlayCharacterFireAnimation() const
 	if(AnimInstance)
 	{
 		AnimInstance->Montage_Play(FireAnimation, 1.f);
+	}
+}
+
+void ARCharacter::AttachWeapon(ARWeapon* Weapon, const FName& Socket)
+{
+	if(Weapon)
+	{
+		Weapon->AttachToComponent(GetWeaponParentComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale, Socket);
+	}
+}
+
+void ARCharacter::AttachDefaultWeapon()
+{
+	if(DefaultWeaponBP)
+	{
+		const auto SpawnedWeapon = GetWorld()->SpawnActor<ARWeapon>(DefaultWeaponBP, GetActorTransform());
+		AttachWeapon(SpawnedWeapon, MainWeaponSocket);
 	}
 }
 

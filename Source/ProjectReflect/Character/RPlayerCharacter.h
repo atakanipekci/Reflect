@@ -12,12 +12,23 @@ UCLASS()
 class PROJECTREFLECT_API ARPlayerCharacter : public ARCharacter
 {
 	GENERATED_BODY()
-
+public:
 	ARPlayerCharacter();
+	virtual void AttachWeapon(class ARWeapon* Weapon, const FName& Socket) override;
+
+	//TODO GET Rid of these
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
+	bool bHasRifle;
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void SetHasRifle(bool bNewHasRifle);
+	//
+	virtual USkeletalMeshComponent* GetWeaponParentComponent() const override { return Mesh1P;}
 	
-	void AttachDefaultWeapon();
+	void HideTrajectory() const;
+	void ShowTrajectory() const;
+	
+private:	
 	void AddFireMappingContext();
-	void AttachWeapon(class ARWeapon* Weapon);
 
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh1P;
@@ -43,14 +54,8 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ARCharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* FireAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Weapon, meta=(AllowPrivateAccess = "true"))
-	TSubclassOf<AActor> DefaultWeaponBP;
-
 	UPROPERTY()
 	ARWeapon* AttachedWeapon;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	FName CharacterSocket = "GripPoint";
 
 protected:
 	
@@ -69,15 +74,4 @@ protected:
 
 public:
 	
-	//TODO GET Rid of these
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
-	bool bHasRifle;
-	UFUNCTION(BlueprintCallable, Category = Weapon)
-	void SetHasRifle(bool bNewHasRifle);
-	//
-	
-	void HideTrajectory() const;
-	void ShowTrajectory() const;
-
-	USkeletalMeshComponent* GetWeaponParentComponent() const;
 };

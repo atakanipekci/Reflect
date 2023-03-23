@@ -28,14 +28,26 @@ public:
 	void Death();
 	
 	void PlayCharacterFireAnimation() const;
+
+	virtual void AttachWeapon(class ARWeapon* Weapon, const FName& Socket);
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void AttachDefaultWeapon();
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* FireAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Gameplay, meta=(AllowPrivateAccess = "true"))
+	FName MainWeaponSocket = "GripPoint";
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Weapon, meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<AActor> DefaultWeaponBP;
+	
+	virtual USkeletalMeshComponent* GetWeaponParentComponent() const { return GetMesh();}
 	
 protected:
 

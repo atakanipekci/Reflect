@@ -15,8 +15,8 @@ class PROJECTREFLECT_API AREnemyCharacter : public ARCharacter
 	GENERATED_BODY()
 
 public:
-
+	
 	UFUNCTION(BlueprintCallable)
-	void FireWeapon();
+	virtual void FireWeapon();
 	
 };
