@@ -68,6 +68,7 @@ void ARCharacter::AttachWeapon(ARWeapon* Weapon, const FName& Socket)
 	if(Weapon)
 	{
 		Weapon->AttachToComponent(GetWeaponParentComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale, Socket);
+		AttachedWeapon = Weapon;
 	}
 }
 

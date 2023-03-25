@@ -3,7 +3,4 @@
 
 #include "RTurretCharacter.h"
 
-void ARTurretCharacter::FireWeapon()
-{
-	Super::FireWeapon();
-}
+

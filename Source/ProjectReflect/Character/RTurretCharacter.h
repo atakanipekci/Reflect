@@ -13,6 +13,4 @@ UCLASS()
 class PROJECTREFLECT_API ARTurretCharacter : public AREnemyCharacter
 {
 	GENERATED_BODY()
-
-	virtual void FireWeapon() override;
 };

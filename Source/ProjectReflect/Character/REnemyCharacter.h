@@ -17,6 +17,6 @@ class PROJECTREFLECT_API AREnemyCharacter : public ARCharacter
 public:
 	
 	UFUNCTION(BlueprintCallable)
-	virtual void FireWeapon();
+	virtual void FireWeapon(AActor* Target = nullptr);
 	
 };

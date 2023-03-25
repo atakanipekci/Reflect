@@ -63,7 +63,6 @@ void ARPlayerCharacter::AttachWeapon(ARWeapon* Weapon, const FName& Socket)
 	if(Weapon)
 	{
 		Super::AttachWeapon(Weapon, Socket);
-		AttachedWeapon = Weapon;
 		SetHasRifle(true);
 
 		//TODO remove mapping context on weapon detach

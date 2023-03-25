@@ -3,6 +3,21 @@
 
 #include "REnemyCharacter.h"
 
-void AREnemyCharacter::FireWeapon()
+#include "ProjectReflect/Weapon/RWeapon.h"
+
+void AREnemyCharacter::FireWeapon(AActor* Target /* = nullptr*/)
 {
+	if(AttachedWeapon)
+	{
+		PlayCharacterFireAnimation();
+
+		FRotator SpawnRotation = GetActorRotation();
+		if(Target)
+		{
+			SpawnRotation = (Target->GetActorLocation()-GetActorLocation()).Rotation();
+		}
+		const auto SpawnLocation = GetActorLocation() + GetActorForwardVector()*100;
+		
+		AttachedWeapon->Fire(SpawnLocation, SpawnRotation);
+	}
 }

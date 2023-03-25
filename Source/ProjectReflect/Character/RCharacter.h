@@ -56,4 +56,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	URLifeComponent* LifeComponent;
+
+	UPROPERTY()
+	ARWeapon* AttachedWeapon;
 };
