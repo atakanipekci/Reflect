@@ -130,6 +130,7 @@ void ARPlayerCharacter::GetSpawnPosAndRot(FVector& CamLoc, FRotator& CamRot) con
 
 void ARPlayerCharacter::Fire()
 {
+	if(!IsSpawnPositionValid()) return;
 	if(AttachedWeapon)
 	{
 		PlayCharacterFireAnimation();
@@ -142,6 +143,32 @@ void ARPlayerCharacter::Fire()
 		}
 	}
 }
+
+bool ARPlayerCharacter::IsSpawnPositionValid()
+{
+	if(FirstPersonCameraComponent == nullptr) return false;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	QueryParams.AddIgnoredActor(AttachedWeapon);
+	
+	FHitResult Hit;
+	FVector TraceStart = FirstPersonCameraComponent->GetComponentLocation();
+	FVector TraceEnd;
+	FRotator SpawnRot;
+
+	GetSpawnPosAndRot(TraceEnd, SpawnRot);
+
+	FVector ExtraDist = (TraceEnd - TraceStart).GetSafeNormal() * 50;
+	TraceEnd = TraceEnd + ExtraDist;
+
+	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_GameTraceChannel1, QueryParams);
+
+	// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, Hit.bBlockingHit ? FColor::Red : FColor::Green, false, 0.2f, 0, 3.0f);
+
+	return Hit.GetActor() == nullptr;
+}
+
 void ARPlayerCharacter::TryUpdateTrajectoryComponent()
 {
 	if(AttachedWeapon == nullptr) return;
@@ -149,6 +176,14 @@ void ARPlayerCharacter::TryUpdateTrajectoryComponent()
 	const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon);
 
 	if(ProjectileWeapon == nullptr) return;
+	if(ProjectileWeapon->TrajectoryComponent == nullptr) return;
+	if(!ProjectileWeapon->TrajectoryComponent->IsTrajectoryActive()) return;
+
+	if(!IsSpawnPositionValid())
+	{
+		ProjectileWeapon->TrajectoryComponent->ClearTrajectory();
+		return;
+	}
 	
 	FVector SpawnPos;
 	FRotator SpawnRot;
@@ -185,7 +220,7 @@ void ARPlayerCharacter::ShowTrajectory(bool show)
 		}
 		else
 		{
-			ProjectileWeapon->TrajectoryComponent->ClearTrajectory();
+			ProjectileWeapon->TrajectoryComponent->DestroyTrajectory();
 		}
 	}
 }

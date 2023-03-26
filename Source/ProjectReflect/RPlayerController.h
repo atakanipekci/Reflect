@@ -15,7 +15,7 @@ class PROJECTREFLECT_API ARPlayerController : public APlayerController
 	GENERATED_BODY()
 
 	UFUNCTION(Exec, Category = "Commands")
-	void ShowTrajectory(bool show);
+	void ShowTrajectory(bool Show);
 
 	UFUNCTION(Exec, Category = "Shoot")
 	void Shoot();

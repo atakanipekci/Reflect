@@ -72,6 +72,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void GetSpawnPosAndRot(FVector& CamLoc, FRotator& CamRot) const;
 	void Fire();
+	bool IsSpawnPositionValid();
 	void TryUpdateTrajectoryComponent();
 
 public:

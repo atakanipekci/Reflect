@@ -68,7 +68,7 @@ void URProjectileTrajectoryComponent::DrawTrajectorySplineFromPath(ARSplineActor
 
 void URProjectileTrajectoryComponent::DrawTrajectory(FVector Origin, FVector ShootDir, ARProjectile* ProjectileBP, TArray<TObjectPtr<AActor>> ActorsToIgnore, const FVector& MuzzleLocation)
 {
-	if(ProjectileBP && TrajectorySplineInstance)
+	if(ProjectileBP && IsTrajectoryActive())
 	{
 		FPredictProjectilePathResult ProjectileResult;
 
@@ -166,15 +166,33 @@ void URProjectileTrajectoryComponent::DisableSplineFromReflection() const
 	}
 }
 
-void URProjectileTrajectoryComponent::ClearTrajectory()
+bool URProjectileTrajectoryComponent::IsTrajectoryActive() const
+{
+	return TrajectorySplineInstance != nullptr && TrajectoryReflectionSplineInstance != nullptr;
+}
+
+void URProjectileTrajectoryComponent::DestroyTrajectory()
+{
+	if(TrajectorySplineInstance)
+	{
+		TrajectorySplineInstance->Destroy();
+		TrajectorySplineInstance = nullptr;
+	}
+
+	if(TrajectoryReflectionSplineInstance)
+	{
+		TrajectoryReflectionSplineInstance->Destroy();
+		TrajectoryReflectionSplineInstance = nullptr;
+	}
+}
+
+void URProjectileTrajectoryComponent::ClearTrajectory() const
 {
 	if(TrajectorySplineInstance)
 	{
 		TrajectorySplineInstance->ClearNodes();
 		TrajectorySplineInstance->UpdateSpline();
 		TrajectorySplineInstance->SetActorHiddenInGame(true);
-		TrajectorySplineInstance->Destroy();
-		TrajectorySplineInstance = nullptr;
 	}
 
 	if(TrajectoryReflectionSplineInstance)
@@ -182,8 +200,6 @@ void URProjectileTrajectoryComponent::ClearTrajectory()
 		TrajectoryReflectionSplineInstance->ClearNodes();
 		TrajectoryReflectionSplineInstance->UpdateSpline();
 		TrajectoryReflectionSplineInstance->SetActorHiddenInGame(true);
-		TrajectoryReflectionSplineInstance->Destroy();
-		TrajectoryReflectionSplineInstance = nullptr;
 	}
 }
 

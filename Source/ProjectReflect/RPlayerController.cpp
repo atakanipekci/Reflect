@@ -6,11 +6,11 @@
 #include "Character/RPlayerCharacter.h"
 
 
-void ARPlayerController::ShowTrajectory(bool show)
+void ARPlayerController::ShowTrajectory(bool Show)
 {
 	if(auto Char = Cast<ARPlayerCharacter>(GetCharacter()))
 	{
-		Char->ShowTrajectory(show);
+		Char->ShowTrajectory(Show);
 	}
 }
 

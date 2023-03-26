@@ -20,11 +20,12 @@ public:
 	void DrawTrajectorySplineFromPath(class ARSplineActor* Spline, TArray<FVector> Path) const;
 	void DrawTrajectorySplineFromWeapon(TArray<FVector> Path) const;
 	void DrawTrajectorySplineFromReflection(TArray<FVector> Path) const;
-	void DrawTrajectory(FVector Origin, FVector ShootDir, ARProjectile* ProjectileBp, TArray<TObjectPtr<AActor>> ActorsToIgnore, const FVector&
-	                    MuzzleLocation);
-	void ClearTrajectory();
+	void DrawTrajectory(FVector Origin, FVector ShootDir, ARProjectile* ProjectileBp, TArray<TObjectPtr<AActor>> ActorsToIgnore, const FVector& MuzzleLocation);
+	void DestroyTrajectory();
+	void ClearTrajectory() const;
 	void DisableSplineFromWeapon() const;
 	void DisableSplineFromReflection() const;
+	bool IsTrajectoryActive() const;
 	URProjectileInteractorComponent* GetInteractorComponentFromActor(const AActor* OtherActor) const;
 	FPredictProjectilePathParams GetTrajectoryParams(FVector StartLocation, FVector Velocity, float Radius, TArray<TObjectPtr<AActor>> ActorsToIgnore, float Gravity, float SimTime);
 
