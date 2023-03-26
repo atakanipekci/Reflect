@@ -24,6 +24,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
 	void OnProjectileHit(class ARProjectile* Projectile, const FHitResult& Hit);
 
 public:	
