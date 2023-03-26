@@ -26,9 +26,14 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
 
+	void DrawTrajectory(FVector SpawnPos, FVector Dir, TArray<TObjectPtr<AActor>> ActorsToIgnore) const;
+
 	UFUNCTION()
 	void OnProjectileHit(AActor* OtherActor, const FHitResult& Hit);
 
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
 	TSubclassOf<class ARProjectile> ProjectileClass;
+
+	UPROPERTY()
+	class URProjectileTrajectoryComponent* TrajectoryComponent;
 };

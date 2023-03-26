@@ -24,9 +24,9 @@ public:
 	//
 	virtual USkeletalMeshComponent* GetWeaponParentComponent() const override { return Mesh1P;}
 	
-	void HideTrajectory() const;
-	void ShowTrajectory() const;
-	
+	void ShowTrajectory(bool show);
+	void DebugShoot();
+
 private:	
 	void AddFireMappingContext();
 
@@ -65,11 +65,14 @@ protected:
 	class UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem;
 	
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void GetSpawnPosAndRot(FVector& CamLoc, FRotator& CamRot) const;
 	void Fire();
+	void TryUpdateTrajectoryComponent();
 
 public:
 	

@@ -2,10 +2,12 @@
 
 #include "RProjectileWeapon.h"
 #include "Kismet/GameplayStatics.h"
+#include "ProjectReflect/Components/RProjectileTrajectoryComponent.h"
 #include "ProjectReflect/Projectile/RProjectile.h"
 
 ARProjectileWeapon::ARProjectileWeapon()
 {
+	TrajectoryComponent = CreateDefaultSubobject<URProjectileTrajectoryComponent>(TEXT("Trajectory Component"));
 }
 
 void ARProjectileWeapon::Fire(FVector Location, FRotator Rotation)
@@ -38,6 +40,14 @@ void ARProjectileWeapon::Tick(float DeltaSeconds)
 void ARProjectileWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ARProjectileWeapon::DrawTrajectory(FVector SpawnPos, FVector Dir, TArray<TObjectPtr<AActor>> ActorsToIgnore) const
+{
+	if(TrajectoryComponent == nullptr || SkeletalMesh == nullptr || ProjectileClass == nullptr) return;
+	
+	const auto MuzzleLocation = SkeletalMesh->GetSocketLocation(MuzzleSocket);
+	TrajectoryComponent->DrawTrajectory(SpawnPos, Dir, Cast<ARProjectile>(ProjectileClass.GetDefaultObject()), ActorsToIgnore, MuzzleLocation);
 }
 
 void ARProjectileWeapon::OnProjectileHit(AActor* OtherActor, const FHitResult& Hit)

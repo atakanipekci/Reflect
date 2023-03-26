@@ -6,18 +6,18 @@
 #include "Character/RPlayerCharacter.h"
 
 
-void ARPlayerController::HideTrajectory()
+void ARPlayerController::ShowTrajectory(bool show)
 {
 	if(auto Char = Cast<ARPlayerCharacter>(GetCharacter()))
 	{
-		Char->HideTrajectory();
+		Char->ShowTrajectory(show);
 	}
 }
 
-void ARPlayerController::ShowTrajectory()
+void ARPlayerController::Shoot()
 {
 	if(auto Char = Cast<ARPlayerCharacter>(GetCharacter()))
 	{
-		Char->ShowTrajectory();
+		Char->DebugShoot();
 	}
 }

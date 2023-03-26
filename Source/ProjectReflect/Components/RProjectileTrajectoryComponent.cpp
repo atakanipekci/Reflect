@@ -66,7 +66,7 @@ void URProjectileTrajectoryComponent::DrawTrajectorySplineFromPath(ARSplineActor
 	}
 }
 
-void URProjectileTrajectoryComponent::DrawTrajectory(FVector Origin, FVector ShootDir, ARProjectile* ProjectileBP, TArray<TObjectPtr<AActor>> ActorsToIgnore, const FVector& MuzzleLocation, const FRotator& MuzzleRotation)
+void URProjectileTrajectoryComponent::DrawTrajectory(FVector Origin, FVector ShootDir, ARProjectile* ProjectileBP, TArray<TObjectPtr<AActor>> ActorsToIgnore, const FVector& MuzzleLocation)
 {
 	if(ProjectileBP && TrajectorySplineInstance)
 	{

@@ -46,6 +46,12 @@ void ARPlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ARPlayerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	TryUpdateTrajectoryComponent();
+}
+
 void ARPlayerCharacter::AddFireMappingContext()
 {
 	if (PlayerController)
@@ -115,21 +121,47 @@ void ARPlayerCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void ARPlayerCharacter::GetSpawnPosAndRot(FVector& CamLoc, FRotator& CamRot) const
+{
+	if(PlayerController == nullptr) return;
+	PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
+	CamLoc = CamLoc + CamRot.Vector().GetSafeNormal() * 100;
+}
+
 void ARPlayerCharacter::Fire()
 {
 	if(AttachedWeapon)
 	{
 		PlayCharacterFireAnimation();
-
-		//TODO change calculation
 		if(PlayerController && PlayerController->PlayerCameraManager)
 		{
-			const auto SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-			const auto SpawnLocation = PlayerController->PlayerCameraManager->GetCameraLocation() + SpawnRotation.RotateVector(FVector(200, 0, 0));
-			
-			AttachedWeapon->Fire(SpawnLocation, SpawnRotation);
+			FVector SpawnLoc;
+			FRotator SpawnRot;
+			GetSpawnPosAndRot(SpawnLoc, SpawnRot);
+			AttachedWeapon->Fire(SpawnLoc, SpawnRot);
 		}
 	}
+}
+void ARPlayerCharacter::TryUpdateTrajectoryComponent()
+{
+	if(AttachedWeapon == nullptr) return;
+
+	const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon);
+
+	if(ProjectileWeapon == nullptr) return;
+	
+	FVector SpawnPos;
+	FRotator SpawnRot;
+	GetSpawnPosAndRot(SpawnPos, SpawnRot);
+	
+	TArray<TObjectPtr<AActor>> ActorsToIgnore;
+	ActorsToIgnore.Add(this);
+	ActorsToIgnore.Add(ProjectileWeapon);
+	
+	ProjectileWeapon->DrawTrajectory(SpawnPos, SpawnRot.Vector(), ActorsToIgnore);
+
+	/** If there is no dynamic object on the map that can collide with the projectile, you can optimize this to
+	 only update when player moves themselves or moves their aim*/
 }
 
 void ARPlayerCharacter::SetHasRifle(bool bNewHasRifle)
@@ -137,30 +169,28 @@ void ARPlayerCharacter::SetHasRifle(bool bNewHasRifle)
 	bHasRifle = bNewHasRifle;
 }
 
-void ARPlayerCharacter::HideTrajectory() const
+void ARPlayerCharacter::ShowTrajectory(bool show)
 {
-	// if(AttachedWeapon)
-	// {
-	// 	if(const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon))
-	// 	{
-	// 		if(ProjectileWeapon->TrajectoryComponent)
-	// 		{
-	// 			ProjectileWeapon->TrajectoryComponent->ClearTrajectory();
-	// 		}
-	// 	}
-	// }
+	if(AttachedWeapon == nullptr) return;
+
+	const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon);
+
+	if(ProjectileWeapon == nullptr) return;
+
+	if(ProjectileWeapon->TrajectoryComponent)
+	{
+		if(show)
+		{
+			ProjectileWeapon->TrajectoryComponent->SpawnTrajectorySpline();
+		}
+		else
+		{
+			ProjectileWeapon->TrajectoryComponent->ClearTrajectory();
+		}
+	}
 }
 
-void ARPlayerCharacter::ShowTrajectory() const
+void ARPlayerCharacter::DebugShoot()
 {
-	// if(AttachedWeapon)
-	// {
-	// 	if(const auto ProjectileWeapon = Cast<ARProjectileWeapon>(AttachedWeapon))
-	// 	{
-	// 		if(ProjectileWeapon->TrajectoryComponent)
-	// 		{
-	// 			ProjectileWeapon->TrajectoryComponent->SpawnTrajectorySpline();
-	// 		}
-	// 	}
-	// }
+	Fire();
 }

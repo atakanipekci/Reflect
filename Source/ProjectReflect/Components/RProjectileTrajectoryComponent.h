@@ -20,7 +20,8 @@ public:
 	void DrawTrajectorySplineFromPath(class ARSplineActor* Spline, TArray<FVector> Path) const;
 	void DrawTrajectorySplineFromWeapon(TArray<FVector> Path) const;
 	void DrawTrajectorySplineFromReflection(TArray<FVector> Path) const;
-	void DrawTrajectory(FVector Origin, FVector ShootDir, ARProjectile* ProjectileBp, TArray<TObjectPtr<AActor>> ActorsToIgnore, const FVector& MuzzleLocation, const FRotator& MuzzleRotation);
+	void DrawTrajectory(FVector Origin, FVector ShootDir, ARProjectile* ProjectileBp, TArray<TObjectPtr<AActor>> ActorsToIgnore, const FVector&
+	                    MuzzleLocation);
 	void ClearTrajectory();
 	void DisableSplineFromWeapon() const;
 	void DisableSplineFromReflection() const;
