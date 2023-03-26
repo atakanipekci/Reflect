@@ -18,6 +18,12 @@ void ARDestructibleActor::PostInitProperties()
 	Super::PostInitProperties();
 }
 
+bool ARDestructibleActor::Activate()
+{
+	Explode(GetActorLocation());
+	return true;
+}
+
 // Called when the game starts or when spawned
 void ARDestructibleActor::BeginPlay()
 {

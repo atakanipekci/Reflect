@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ProjectReflect/Activatables/RIActivatable.h"
 #include "ProjectReflect/Components/RLifeComponent.h"
 #include "RDestructibleActor.generated.h"
 
 UCLASS()
-class PROJECTREFLECT_API ARDestructibleActor : public AActor
+class PROJECTREFLECT_API ARDestructibleActor : public AActor, public IRActivatable
 {
 	GENERATED_BODY()
 	
@@ -25,9 +26,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Damaged(FHitResult HitResult, bool bKilled);
 
-
 	UFUNCTION(BlueprintImplementableEvent)
 	void Explode(const FVector& HitAt);
+
+	virtual bool Activate() override;
 
 protected:
 	// Called when the game starts or when spawned
