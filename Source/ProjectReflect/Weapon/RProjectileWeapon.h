@@ -18,7 +18,7 @@ class PROJECTREFLECT_API ARProjectileWeapon : public ARWeapon
 public:
 	ARProjectileWeapon();
 	
-	virtual void Fire(FVector Location, FRotator Rotation) override;
+	virtual void Shoot(FVector Location, FRotator Rotation) override;
 
 	UFUNCTION()
 	virtual void SpawnProjectile(FVector Location, FRotator Rotation) const;

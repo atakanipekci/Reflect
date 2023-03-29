@@ -10,8 +10,11 @@ ARProjectileWeapon::ARProjectileWeapon()
 	TrajectoryComponent = CreateDefaultSubobject<URProjectileTrajectoryComponent>(TEXT("Trajectory Component"));
 }
 
-void ARProjectileWeapon::Fire(FVector Location, FRotator Rotation)
+void ARProjectileWeapon::Shoot(FVector Location, FRotator Rotation)
 {
+	if(IsShootCooldownActive())return;
+	
+	Super::Shoot(Location, Rotation);
 	SpawnProjectile(Location, Rotation);
 }
 

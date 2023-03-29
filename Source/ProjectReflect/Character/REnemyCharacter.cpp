@@ -7,7 +7,7 @@
 
 void AREnemyCharacter::FireWeapon(AActor* Target /* = nullptr*/)
 {
-	if(AttachedWeapon)
+	if(AttachedWeapon && !AttachedWeapon->IsShootCooldownActive())
 	{
 		PlayCharacterFireAnimation();
 
@@ -18,6 +18,6 @@ void AREnemyCharacter::FireWeapon(AActor* Target /* = nullptr*/)
 		}
 		const auto SpawnLocation = GetActorLocation() + GetActorForwardVector()*100;
 		
-		AttachedWeapon->Fire(SpawnLocation, SpawnRotation);
+		AttachedWeapon->Shoot(SpawnLocation, SpawnRotation);
 	}
 }

@@ -131,7 +131,8 @@ void ARPlayerCharacter::GetSpawnPosAndRot(FVector& CamLoc, FRotator& CamRot) con
 void ARPlayerCharacter::Fire()
 {
 	if(!IsSpawnPositionValid()) return;
-	if(AttachedWeapon)
+	
+	if(AttachedWeapon && !AttachedWeapon->IsShootCooldownActive())
 	{
 		PlayCharacterFireAnimation();
 		if(PlayerController && PlayerController->PlayerCameraManager)
@@ -139,7 +140,7 @@ void ARPlayerCharacter::Fire()
 			FVector SpawnLoc;
 			FRotator SpawnRot;
 			GetSpawnPosAndRot(SpawnLoc, SpawnRot);
-			AttachedWeapon->Fire(SpawnLoc, SpawnRot);
+			AttachedWeapon->Shoot(SpawnLoc, SpawnRot);
 		}
 	}
 }
