@@ -24,6 +24,9 @@ protected:
 	UPROPERTY()
 	TArray<class URProjectileBehaviorModifier*> BehaviorModifiers;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bEnableBounce;
+
 public:	
 	UPROPERTY(BlueprintAssignable)
 	FProjectileInteractorDelegate OnProjectileHitDelegate;

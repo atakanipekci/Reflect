@@ -40,6 +40,11 @@ void URProjectileInteractorComponent::OnProjectileHit(ARProjectile* Projectile, 
 			Modifier->ApplyBehavior(Projectile, Hit);
 		}
 	}
+
+	if(!bEnableBounce && Projectile)
+	{
+		Projectile->DestroyProjectile();
+	}
 }
 
 FVector URProjectileInteractorComponent::GetBounceDir(FVector Velocity, const FHitResult& Hit)
