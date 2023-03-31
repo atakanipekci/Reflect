@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ProjectReflect/Activatables/RIActivatable.h"
-#include "LauncherPlatform.generated.h"
+#include "RLauncherPlatform.generated.h"
 
 UCLASS()
-class PROJECTREFLECT_API ALauncherPlatform : public AActor, public IRActivatable
+class PROJECTREFLECT_API ARLauncherPlatform : public AActor, public IRActivatable
 {
 	GENERATED_BODY()
 	
@@ -19,7 +19,7 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex);
 	// Sets default values for this actor's properties
-	ALauncherPlatform();
+	ARLauncherPlatform();
 
 protected:
 	// Called when the game starts or when spawned

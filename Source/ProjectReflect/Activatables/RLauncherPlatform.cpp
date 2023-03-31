@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "LauncherPlatform.h"
+#include "RLauncherPlatform.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
 #include "ProjectReflect/Character/RCharacter.h"
 #include "ProjectReflect/Components/ProjectileInteractor/RProjectileInteractorComponent.h"
 
 // Sets default values
-ALauncherPlatform::ALauncherPlatform()
+ARLauncherPlatform::ARLauncherPlatform()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -15,28 +15,28 @@ ALauncherPlatform::ALauncherPlatform()
 	ProjectileInteractionComponent = CreateDefaultSubobject<URProjectileInteractorComponent>(TEXT("Projectile Interactor"));
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ALauncherPlatform::OnOverlapBegin);
-	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ALauncherPlatform::OnOverlapEnd);
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ARLauncherPlatform::OnOverlapBegin);
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ARLauncherPlatform::OnOverlapEnd);
 	BoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	
 	SetRootComponent(BoxComponent);
 }
 
 // Called when the game starts or when spawned
-void ALauncherPlatform::BeginPlay()
+void ARLauncherPlatform::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void ALauncherPlatform::Tick(float DeltaTime)
+void ARLauncherPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-bool ALauncherPlatform::Activate()
+bool ARLauncherPlatform::Activate()
 {
 	bool bFlag = false;
 	for (const auto Character : CharactersToLaunch)
@@ -48,7 +48,7 @@ bool ALauncherPlatform::Activate()
 	return bFlag;
 }
 
-void ALauncherPlatform::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void ARLauncherPlatform::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG( LogStats, Warning, TEXT( "OnOverlapBegin: %s" ), *OtherActor->GetName());
@@ -73,7 +73,7 @@ void ALauncherPlatform::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 	//
 }
 
-void ALauncherPlatform::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void ARLauncherPlatform::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int OtherBodyIndex)
 {
 	if(OtherActor)
