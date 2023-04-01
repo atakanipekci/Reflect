@@ -13,7 +13,6 @@ class PROJECTREFLECT_API URBounceBehaviorModifierComponent : public URProjectile
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	URBounceBehaviorModifierComponent();
 
 	virtual void ApplyBehavior(ARProjectile* Projectile, const FHitResult& Hit) override;
@@ -21,8 +20,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Properties)
 	bool bModifyGravityOnHit;
+	
 	UPROPERTY(EditAnywhere, Category = Properties)
 	float Gravity;
+	
 	UPROPERTY(EditAnywhere, Category = Properties)
 	bool StopMovementImmediately;
 

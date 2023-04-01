@@ -13,28 +13,20 @@ class PROJECTREFLECT_API ARLauncherPlatform : public AActor, public IRActivatabl
 	GENERATED_BODY()
 	
 public:
+	ARLauncherPlatform();
+	
 	UFUNCTION()
-
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex);
-	// Sets default values for this actor's properties
-	ARLauncherPlatform();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	virtual bool Activate() override;
 
 	UPROPERTY()
 	TArray<class ARCharacter*> CharactersToLaunch;
 
-	protected:
+protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class URProjectileInteractorComponent* ProjectileInteractionComponent;

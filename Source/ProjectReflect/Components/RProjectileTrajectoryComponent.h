@@ -34,6 +34,7 @@ public:
 	
 	UPROPERTY()
 	ARSplineActor* TrajectorySplineInstance;
+	
 	UPROPERTY()
 	ARSplineActor* TrajectoryReflectionSplineInstance;
 };

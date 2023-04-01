@@ -29,10 +29,6 @@ void URProjectileTrajectoryComponent::SpawnTrajectorySpline()
 	{
 		TrajectorySplineInstance->SetActorScale3D(FVector{0.25,0.25,0.25});
 		TrajectorySplineInstance->SetActorHiddenInGame(true);
-		// TrajectorySplineActor->ClearNodes();
-		// TrajectorySplineActor->SplineMeshMap = TrajectorySplineMap;
-		// TrajectorySplineActor->UpdateSpline();
-		// TrajectorySplineActor->SetReplicates(false);
 	}
 	if(TrajectoryReflectionSplineInstance)
 	{
@@ -137,16 +133,6 @@ FPredictProjectilePathParams URProjectileTrajectoryComponent::GetTrajectoryParam
 	ProjectileParams.MaxSimTime = SimTime;
 	ProjectileParams.ActorsToIgnore = ActorsToIgnore;
 	ProjectileParams.OverrideGravityZ = Gravity;
-	// ProjectileParams.DrawDebugType = EDrawDebugTrace::ForOneFrame;
-	
-	// ProjectileParams.ObjectTypes = ObjectTypesToHit;
-	// ProjectileParams.bTraceWithChannel = true;
-	// ProjectileParams.DrawDebugType = EDrawDebugTrace::ForOneFrame;
-	// TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesToHit;
-	// ObjectTypesToHit.Add(ObjectTypeQuery1);//World_Static
-	// ObjectTypesToHit.Add(ObjectTypeQuery3);//Pawn
-	// ObjectTypesToHit.Add(ObjectTypeQuery6);//Destructable
-	// ObjectTypesToHit.Add(ObjectTypeQuery7);//Obstacles
 
 	return ProjectileParams;
 }

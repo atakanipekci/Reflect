@@ -14,11 +14,9 @@ class PROJECTREFLECT_API URProjectileInteractorComponent : public UActorComponen
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	URProjectileInteractorComponent();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	UPROPERTY()

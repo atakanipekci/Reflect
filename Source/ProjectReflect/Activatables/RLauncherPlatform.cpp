@@ -22,20 +22,6 @@ ARLauncherPlatform::ARLauncherPlatform()
 	SetRootComponent(BoxComponent);
 }
 
-// Called when the game starts or when spawned
-void ARLauncherPlatform::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ARLauncherPlatform::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 bool ARLauncherPlatform::Activate()
 {
 	bool bFlag = false;

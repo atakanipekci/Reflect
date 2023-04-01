@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "RProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -22,15 +21,6 @@ ARProjectile::ARProjectile()
 
 	DamageComponent = CreateDefaultSubobject<URDamageComponent>(TEXT("Damage Component"));
 
-	// OuterCollision = CreateDefaultSubobject<USphereComponent>(TEXT("OuterCollision"));
-	// OuterCollision->InitSphereRadius(50.0f);
-	// OuterCollision->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
-	// OuterCollision->CanCharacterStepUpOn = ECB_No;
-	// OuterCollision->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
-	// OuterCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	// OuterCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
-	// OuterCollision->AttachToComponent(InnerCollision, FAttachmentTransformRules::KeepRelativeTransform);
-
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
 	ProjectileMovement->UpdatedComponent = InnerCollision;
 	ProjectileMovement->InitialSpeed = 3000.f;
@@ -40,7 +30,6 @@ ARProjectile::ARProjectile()
 	ProjectileMovement->bShouldBounce = true;
 	ProjectileMovement->Bounciness = 1;
 	ProjectileMovement->Friction = 0;
-	// ProjectileMovement->bRotationFollowsVelocity = true;//creates twitching
 
 	LevelComponent = CreateDefaultSubobject<URLevelComponent>(TEXT("Level Component"));
 	LevelComponent->OnLevelUp.AddDynamic(this, &ARProjectile::OnLevelUp);
@@ -63,16 +52,6 @@ void ARProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrim
 	{
 		DamageComponent->DealDamage(OtherActor, Hit);
 	}
-	
-	// if(GetLifeSpan() <= 0) return;
-	//
-	// if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
-	// {
-	// 	OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-	//
-	// 	SetLifeSpan(5);
-	// 	
-	// }
 }
 
 URProjectileInteractorComponent* ARProjectile::GetInteractorComponentFromActor(const AActor* OtherActor) const
