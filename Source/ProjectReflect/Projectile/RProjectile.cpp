@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "ProjectReflect/Components/RDamageComponent.h"
+#include "ProjectReflect/Components/RLevelComponent.h"
 #include "ProjectReflect/Components/ProjectileInteractor/RProjectileInteractorComponent.h"
 #include "ProjectReflect/Utility/CollisionProfileNames.h"
 
@@ -40,6 +41,9 @@ ARProjectile::ARProjectile()
 	ProjectileMovement->Bounciness = 1;
 	ProjectileMovement->Friction = 0;
 	// ProjectileMovement->bRotationFollowsVelocity = true;//creates twitching
+
+	LevelComponent = CreateDefaultSubobject<URLevelComponent>(TEXT("Level Component"));
+	LevelComponent->OnLevelUp.AddDynamic(this, &ARProjectile::OnLevelUp);
 }
 
 void ARProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -114,6 +118,11 @@ void ARProjectile::OnStop(const FHitResult& ImpactResult)
 {
 	UE_LOG(LogStats, Log, TEXT("OnProjectile OnStop"));
 	OnProjectileStop.Broadcast(ImpactResult);
+}
+
+void ARProjectile::OnLevelUp(int OldLevel, int NewLevel)
+{
+	ProjectileMovement->Velocity = ProjectileMovement->Velocity * 1.5f;
 }
 
 void ARProjectile::DestroyProjectile()

@@ -30,6 +30,9 @@ protected:
 	UFUNCTION()
 	virtual void OnStop(const FHitResult& ImpactResult);
 
+	UFUNCTION()
+	void OnLevelUp(int OldLevel, int NewLevel);
+
 	UPROPERTY(VisibleDefaultsOnly, Category = Collision)
 	class USphereComponent* InnerCollision;
 
@@ -59,6 +62,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FProjectileStopDelegate OnProjectileStop;
 
+	UPROPERTY(EditAnywhere)
+	class URLevelComponent* LevelComponent;
+	
 	UPROPERTY()
 	URProjectileInteractorComponent* LastHitInteractorComponent;
 	UPROPERTY()
