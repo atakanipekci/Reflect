@@ -10,6 +10,7 @@
 #include "ProjectReflect/Weapon/RWeapon.h"
 
 // Sets default values
+
 ARPlayerCharacter::ARPlayerCharacter()
 {
 	// Character doesnt have a rifle at start
@@ -34,14 +35,29 @@ ARPlayerCharacter::ARPlayerCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 }
 
-// Called when the game starts or when spawned
+void ARPlayerCharacter::OnPossessed()
+{
+	PlayerController = Cast<APlayerController>(Controller);
+	if(PlayerController)
+	{
+		EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		AddDefaultMappingContext();
+		if(bHasRifle)
+		{
+			AddFireMappingContext();
+		}
+	}
+}
+
 void ARPlayerCharacter::BeginPlay()
 {
-
 	AnimInstance = Mesh1P->GetAnimInstance();
 	PlayerController = Cast<APlayerController>(Controller);
-	EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-	EnhancedInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
+	if(PlayerController)
+	{
+		EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		AddDefaultMappingContext();
+	}
 	
 	Super::BeginPlay();
 }
@@ -54,12 +70,23 @@ void ARPlayerCharacter::Tick(float DeltaTime)
 
 void ARPlayerCharacter::AddFireMappingContext()
 {
-	if (PlayerController)
+	if (PlayerController && EnhancedInputSubsystem)
 	{
-		if (const auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
+		if(!EnhancedInputSubsystem->HasMappingContext(FireMappingContext))
 		{
-			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
-			Subsystem->AddMappingContext(FireMappingContext, 1);
+			EnhancedInputSubsystem->AddMappingContext(FireMappingContext, 1);	
+		}
+	}
+}
+
+void ARPlayerCharacter::AddDefaultMappingContext()
+{
+	if(PlayerController && EnhancedInputSubsystem)
+	{
+		if(!EnhancedInputSubsystem->HasMappingContext(FireMappingContext))
+		{
+			EnhancedInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
 }

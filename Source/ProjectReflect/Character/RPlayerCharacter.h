@@ -16,6 +16,10 @@ public:
 	ARPlayerCharacter();
 	virtual void AttachWeapon(class ARWeapon* Weapon, const FName& Socket) override;
 
+	UFUNCTION(BlueprintCallable)
+	void OnPossessed();
+	void AddDefaultMappingContext();
+
 	//TODO GET Rid of these
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
@@ -67,6 +71,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+	
 	
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
