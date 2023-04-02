@@ -32,11 +32,7 @@ void URProjectileLevelLibrary::SetActorColorByLevel(AActor* Actor, int Level)
 	const URLevelUpData* GlobalLevelAsset = LoadObject<URLevelUpData>(nullptr, TEXT("/Script/ProjectReflect.RLevelUpData'/Game/Data/LevelUp/DA_GlobalLevelUp.DA_GlobalLevelUp'"));
 	if(GlobalLevelAsset)
 	{
-		
-		const FColor& Color =  GlobalLevelAsset->GetLevelColor(Level);
-
-		UMaterialInstanceDynamic* MaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0),nullptr);
-		MaterialInstance->SetVectorParameterValue(FName(TEXT("DiffuseColor")),Color);
+		UMaterialInstance* MaterialInstance = GlobalLevelAsset->GetLevelMaterial(Level);
 		MeshComponent->SetMaterial(0, MaterialInstance);
 	}
 }

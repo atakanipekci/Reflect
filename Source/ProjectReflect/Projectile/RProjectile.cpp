@@ -101,6 +101,10 @@ void ARProjectile::OnStop(const FHitResult& ImpactResult)
 
 void ARProjectile::OnLevelUp(int OldLevel, int NewLevel)
 {
+	if(OldLevel == NewLevel)
+	{
+		return;
+	}
 	ProjectileMovement->Velocity = ProjectileMovement->Velocity * 1.5f;
 }
 

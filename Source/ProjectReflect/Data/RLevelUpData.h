@@ -15,17 +15,30 @@ class PROJECTREFLECT_API URLevelUpData : public UDataAsset
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FColor> LevelColors;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TArray<UMaterialInstance*> MaterialInstancePerLevel; 
 
-	const FColor& GetLevelColor(int Level) const
+	FColor GetLevelColor(int Level) const
 	{
-		if(LevelColors.Num() == 0 || Level < 0)
+		if(const UMaterialInstance* MaterialInstance = GetLevelMaterial(Level))
 		{
-			return FColor::White;
+			FLinearColor Color;
+			FHashedMaterialParameterInfo Parameter = FHashedMaterialParameterInfo("DiffuseColor");
+			MaterialInstance->GetVectorParameterValue(Parameter, Color);
+			return Color.ToFColor(true);
 		}
 		
-		Level = FMath::Min(Level, LevelColors.Num()-1);
-		return LevelColors[Level];
+		return FColor::White;
+	}
+
+	UMaterialInstance* GetLevelMaterial(int Level) const
+	{
+		if(MaterialInstancePerLevel.Num() == 0 || Level < 0)
+		{
+			return nullptr;
+		}
+		
+		Level = FMath::Min(Level, MaterialInstancePerLevel.Num()-1);
+		return MaterialInstancePerLevel[Level];
 	}
 };
