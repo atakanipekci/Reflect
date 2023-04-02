@@ -21,7 +21,10 @@ void URLevelComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	URProjectileLevelLibrary::SetActorColorByLevel(GetOwner(), Level);
+	if(bSetLevelColor)
+	{
+		URProjectileLevelLibrary::SetActorColorByLevel(GetOwner(), Level);
+	}
 	OnLevelUp.Broadcast(Level, Level);
 }
 
@@ -39,7 +42,12 @@ bool URLevelComponent::LevelUp()
 	if(Level < MaxLevel)
 	{
 		Level++;
-		URProjectileLevelLibrary::SetActorColorByLevel(GetOwner(), Level);
+		
+		if(bSetLevelColor)
+		{
+			URProjectileLevelLibrary::SetActorColorByLevel(GetOwner(), Level);
+		}
+		
 		OnLevelUp.Broadcast(Level-1, Level);
 		return true;
 	}

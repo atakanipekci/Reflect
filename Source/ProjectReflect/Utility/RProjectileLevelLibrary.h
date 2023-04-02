@@ -14,7 +14,10 @@ class PROJECTREFLECT_API URProjectileLevelLibrary : public UBlueprintFunctionLib
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintCallable)
 	static bool TryLevelUpActor(AActor* Actor);
+
+	UFUNCTION(BlueprintCallable)
 	static void SetActorColorByLevel(AActor* Actor, int Level);
 
 };

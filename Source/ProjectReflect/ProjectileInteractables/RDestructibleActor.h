@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ProjectReflect/Activatables/RIActivatable.h"
+#include "ProjectReflect/Components/RLevelComponent.h"
 #include "ProjectReflect/Components/RLifeComponent.h"
 #include "RDestructibleActor.generated.h"
 
@@ -35,7 +36,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnLevelUp(int OldLevel, int NewLevel);
+
 protected:
 	UPROPERTY(EditAnywhere)
 	URLifeComponent* LifeComponent;
+
+	UPROPERTY(EditAnywhere)
+	URLevelComponent* LevelComponent;
 };

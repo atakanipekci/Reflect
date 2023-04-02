@@ -29,6 +29,9 @@ protected:
 
 public:
 	FOnLevelUp OnLevelUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bSetLevelColor = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int MaxLevel = 0;
