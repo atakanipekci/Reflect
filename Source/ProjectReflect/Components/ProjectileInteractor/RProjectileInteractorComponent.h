@@ -22,9 +22,6 @@ protected:
 	UPROPERTY()
 	TArray<class URProjectileBehaviorModifier*> BehaviorModifiers;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bEnableBounce;
-
 public:	
 	UPROPERTY(BlueprintAssignable)
 	FProjectileInteractorDelegate OnProjectileHitDelegate;
@@ -34,4 +31,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual FVector GetBounceDir(FVector Velocity, const FHitResult& Hit);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bEnableBounce;
 };
