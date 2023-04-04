@@ -58,8 +58,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* FireAction;
 
-	
-
 protected:
 	
 	UPROPERTY()
@@ -72,14 +70,10 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	
-	
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void GetSpawnPosAndRot(FVector& CamLoc, FRotator& CamRot) const;
 	void Fire();
 	bool IsSpawnPositionValid();
 	void TryUpdateTrajectoryComponent();
-
-public:
-	
 };
