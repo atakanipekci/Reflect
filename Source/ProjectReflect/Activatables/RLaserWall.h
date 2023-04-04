@@ -6,10 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "RIActivatable.h"
 #include "RLaserWall.generated.h"
 
 UCLASS(Blueprintable)
-class PROJECTREFLECT_API ARLaserWall : public AActor
+class PROJECTREFLECT_API ARLaserWall : public AActor, public IRActivatable
 {
 	GENERATED_BODY()
 	
@@ -19,6 +20,11 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void Toggle();
+
+	virtual bool Activate() override;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -60,4 +66,6 @@ private:
 
 	UPROPERTY()
 	TArray<UNiagaraComponent*> Lasers;
+
+	bool bActive = true;
 };

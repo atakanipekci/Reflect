@@ -62,7 +62,6 @@ void ARLaserWall::Tick(float DeltaTime)
 	
 	for(int i = 0; i < LaserCount; i++)
 	{
-
 		FHitResult HitResult;
 		FVector SourceLocation = LaserLocation->GetComponentLocation() + FVector(0,0, i*SpaceBetween);
 		FVector EndLocation = SourceLocation + LaserLocation->GetForwardVector()*LaserLength;
@@ -81,7 +80,7 @@ void ARLaserWall::Tick(float DeltaTime)
 
 		FVector HitLocation = EndLocation;
 
-		if(HitResult.IsValidBlockingHit())
+		if(HitResult.IsValidBlockingHit() && bActive)
 		{
 			HitLocation = HitResult.ImpactPoint;
 			TryDestroy(HitResult.GetActor());
@@ -102,6 +101,10 @@ void ARLaserWall::Tick(float DeltaTime)
 				}
 			}
 			FVector RelativeLocation = LaserLocation->GetComponentTransform().InverseTransformPosition(HitLocation - FVector(0,0, i*SpaceBetween));
+			if(!bActive)
+			{
+				RelativeLocation = FVector::ZeroVector;
+			}
 			Lasers[i]->SetNiagaraVariablePosition(FString("User.Beam End"), RelativeLocation);
 		}
 		
@@ -114,5 +117,16 @@ void ARLaserWall::Tick(float DeltaTime)
 			12.333
 		);*/
 	}
+}
+
+void ARLaserWall::Toggle()
+{
+	bActive = !bActive;
+}
+
+bool ARLaserWall::Activate()
+{
+	Toggle();
+	return true;
 }
 
