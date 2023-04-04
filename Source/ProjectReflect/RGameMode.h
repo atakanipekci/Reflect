@@ -18,12 +18,13 @@ class PROJECTREFLECT_API ARGameMode : public AGameMode, public ILoadingProcessIn
 	
 public:
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
-	void LoadSubLevel(int LevelId, bool bMakeVisibleAfterLoad, bool bShouldBlockOnLoad, TObjectPtr<UObject> ObjToExecuteOn, FName CallBackFunctionName);
-
+	virtual bool ShouldShowLoadingScreen(FString& OutReason) const override;
+	
 	UFUNCTION()
 	void OnInitialSubLevelLoaded();
 
-	virtual bool ShouldShowLoadingScreen(FString& OutReason) const override;
+	void LoadSubLevel(int LevelId, bool bMakeVisibleAfterLoad, bool bShouldBlockOnLoad, TObjectPtr<UObject> ObjToExecuteOn, FName CallBackFunctionName);
+	void OnPlayerDeath();
 
 	bool bShowLoadingScreen;
 };

@@ -3,6 +3,8 @@
 
 #include "RCharacter.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "ProjectReflect/RGameMode.h"
 #include "ProjectReflect/Weapon/RWeapon.h"
 
 // Sets default values
@@ -27,6 +29,11 @@ float ARCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEven
 void ARCharacter::Death()
 {
 	Destroy();
+	
+	if(auto GameMode = Cast<ARGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
+	{
+		GameMode->OnPlayerDeath();
+	}
 }
 
 // Called when the game starts or when spawned

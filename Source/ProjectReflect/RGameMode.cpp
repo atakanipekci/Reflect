@@ -41,6 +41,14 @@ void ARGameMode::LoadSubLevel(int LevelId, const bool bMakeVisibleAfterLoad, con
 	UGameplayStatics::LoadStreamLevel(GetWorld(), AbsolutePath, bMakeVisibleAfterLoad, bShouldBlockOnLoad, Info);
 }
 
+void ARGameMode::OnPlayerDeath()
+{
+	//TODO convert to static path to IntroLevel
+	// UGameplayStatics::OpenLevel(GetWorld(),"/Game/Maps/IntroLevel");
+	const auto MapPath = FString::Printf(TEXT("/Game/Maps/%s"), *GetWorld()->GetMapName());
+	UGameplayStatics::OpenLevel(GetWorld(),FName(*MapPath));
+}
+
 void ARGameMode::OnInitialSubLevelLoaded()
 {
 	bShowLoadingScreen = false;
