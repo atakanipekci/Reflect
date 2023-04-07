@@ -6,6 +6,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
 #include "ProjectReflect/Components/RProjectileTrajectoryComponent.h"
+#include "ProjectReflect/Components/RTimeManipulatorComponent.h"
+#include "ProjectReflect/TimeModify/RTimeManager.h"
 #include "ProjectReflect/Weapon/RProjectileWeapon.h"
 #include "ProjectReflect/Weapon/RWeapon.h"
 
@@ -33,6 +35,8 @@ ARPlayerCharacter::ARPlayerCharacter()
 	Mesh1P->CastShadow = false;
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+
+	TimeManipulatorComponent = CreateDefaultSubobject<URTimeManipulatorComponent>(TEXT("Time Manipulator"));
 }
 
 void ARPlayerCharacter::OnPossessed()
@@ -119,6 +123,8 @@ void ARPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ARPlayerCharacter::Look);
 
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &ARPlayerCharacter::Fire);
+		
+		EnhancedInputComponent->BindAction(AlternateFireAction, ETriggerEvent::Triggered, this, &ARPlayerCharacter::AlternateFire);
 	}
 }
 
@@ -170,6 +176,16 @@ void ARPlayerCharacter::Fire()
 			AttachedWeapon->Shoot(SpawnLoc, SpawnRot);
 		}
 	}
+}
+
+void ARPlayerCharacter::AlternateFire()
+{
+	if(TimeManipulatorComponent == nullptr)
+	{
+		return;
+	}
+	
+	TimeManipulatorComponent->ModifyTimeForSeconds(0.1f, 3.f);
 }
 
 bool ARPlayerCharacter::IsSpawnPositionValid()

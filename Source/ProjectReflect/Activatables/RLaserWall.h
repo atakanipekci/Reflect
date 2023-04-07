@@ -7,10 +7,11 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "RIActivatable.h"
+#include "ProjectReflect/TimeModify/RITimeModifiable.h"
 #include "RLaserWall.generated.h"
 
 UCLASS(Blueprintable)
-class PROJECTREFLECT_API ARLaserWall : public AActor, public IRActivatable
+class PROJECTREFLECT_API ARLaserWall : public AActor, public IRActivatable, public IRTimeModifiable
 {
 	GENERATED_BODY()
 	

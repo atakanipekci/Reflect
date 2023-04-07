@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "ProjectReflect/Components/RLifeComponent.h"
+#include "ProjectReflect/TimeModify/RITimeModifiable.h"
 #include "RCharacter.generated.h"
 
 UCLASS()
-class PROJECTREFLECT_API ARCharacter : public ACharacter
+class PROJECTREFLECT_API ARCharacter : public ACharacter, public IRTimeModifiable
 {
 	GENERATED_BODY()
 

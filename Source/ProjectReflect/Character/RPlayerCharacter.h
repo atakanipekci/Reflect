@@ -27,7 +27,8 @@ public:
 	void SetHasRifle(bool bNewHasRifle);
 	//
 	virtual USkeletalMeshComponent* GetWeaponParentComponent() const override { return Mesh1P;}
-	
+
+	virtual float GetTimeModifierMultiplier() const override {return 7.f;}
 	void ShowTrajectory(bool show);
 	void DebugShoot();
 
@@ -39,6 +40,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,  meta = (AllowPrivateAccess = "true"))
+	class URTimeManipulatorComponent* TimeManipulatorComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -57,6 +61,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* FireAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* AlternateFireAction;
 
 protected:
 	
@@ -74,6 +81,11 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void GetSpawnPosAndRot(FVector& CamLoc, FRotator& CamRot) const;
 	void Fire();
+	void AlternateFire();
 	bool IsSpawnPositionValid();
 	void TryUpdateTrajectoryComponent();
+
+private:
+
+	
 };

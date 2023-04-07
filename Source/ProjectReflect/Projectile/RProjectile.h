@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStaticsTypes.h"
+#include "ProjectReflect/TimeModify/RITimeModifiable.h"
 #include "RProjectile.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FProjectileHitDelegate, AActor*, OtherActor, const FHitResult&, Hit);
@@ -13,7 +14,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FProjectileBounceDelegate, class U
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FProjectileStopDelegate, const FHitResult&, ImpactResult);
 
 UCLASS()
-class PROJECTREFLECT_API ARProjectile : public AActor
+class PROJECTREFLECT_API ARProjectile : public AActor, public IRTimeModifiable
 {
 	GENERATED_BODY()
 	ARProjectile();
