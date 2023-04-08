@@ -53,6 +53,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bDamageProjectile = true;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bActive = true;
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -68,5 +71,5 @@ private:
 	UPROPERTY()
 	TArray<UNiagaraComponent*> Lasers;
 
-	bool bActive = true;
+	
 };
