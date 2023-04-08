@@ -5,6 +5,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "ProjectReflect/RGameMode.h"
 #include "ProjectReflect/Components/RProjectileTrajectoryComponent.h"
 #include "ProjectReflect/Components/RTimeManipulatorComponent.h"
 #include "ProjectReflect/TimeModify/RTimeManager.h"
@@ -104,6 +106,15 @@ void ARPlayerCharacter::AttachWeapon(ARWeapon* Weapon, const FName& Socket)
 
 		//TODO remove mapping context on weapon detach
 		AddFireMappingContext();
+	}
+}
+
+void ARPlayerCharacter::Death()
+{
+	Super::Death();
+	if(const auto GameMode = Cast<ARGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
+	{
+		GameMode->OnPlayerDeath();
 	}
 }
 

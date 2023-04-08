@@ -14,23 +14,24 @@ class PROJECTREFLECT_API ARPlayerCharacter : public ARCharacter
 	GENERATED_BODY()
 public:
 	ARPlayerCharacter();
+	
 	virtual void AttachWeapon(class ARWeapon* Weapon, const FName& Socket) override;
-
-	UFUNCTION(BlueprintCallable)
-	void OnPossessed();
+	virtual void Death() override;
+	virtual float GetTimeModifierMultiplier() const override {return 7.f;}
+	virtual USkeletalMeshComponent* GetWeaponParentComponent() const override { return Mesh1P;}
+	
 	void AddDefaultMappingContext();
-
+	void ShowTrajectory(bool show);
+	void DebugShoot();
+	
 	//TODO GET Rid of these
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetHasRifle(bool bNewHasRifle);
+	UFUNCTION(BlueprintCallable)
+	void OnPossessed();
 	//
-	virtual USkeletalMeshComponent* GetWeaponParentComponent() const override { return Mesh1P;}
-
-	virtual float GetTimeModifierMultiplier() const override {return 7.f;}
-	void ShowTrajectory(bool show);
-	void DebugShoot();
 
 private:	
 	void AddFireMappingContext();
