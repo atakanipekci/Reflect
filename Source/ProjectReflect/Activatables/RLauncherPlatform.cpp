@@ -27,7 +27,7 @@ bool ARLauncherPlatform::Activate()
 	bool bFlag = false;
 	for (const auto Character : CharactersToLaunch)
 	{
-		Character->LaunchCharacter(LaunchVelocity, false, true);
+		Character->LaunchCharacter(GetActorUpVector() * LaunchVelocity, OverrideVelocityXY, OverrideVelocityZ);
 		bFlag = true;
 	}
 

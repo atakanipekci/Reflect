@@ -35,7 +35,13 @@ protected:
 	class UBoxComponent* BoxComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector LaunchVelocity;
+	float LaunchVelocity = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool OverrideVelocityXY = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool OverrideVelocityZ = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool ActivateOnOverlap;
