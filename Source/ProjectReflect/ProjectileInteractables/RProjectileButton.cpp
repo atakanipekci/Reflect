@@ -27,6 +27,78 @@ void ARProjectileButton::OnProjectileHit(ARProjectile* Projectile, const FHitRes
 	Activate();
 }
 
+void ARProjectileButton::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if(PropertyChangedEvent.GetPropertyName() == GET_MEMBER_NAME_CHECKED(ARProjectileButton, ActorsToActivate))
+	{
+		int ChangedIndex = PropertyChangedEvent.GetArrayIndex(PropertyChangedEvent.GetPropertyName().ToString());
+
+		switch(PropertyChangedEvent.ChangeType)
+		{
+			case EPropertyChangeType::ArrayAdd :
+				Cables.EmplaceAt(ChangedIndex, GetWorld()->SpawnActor<ARSplineActor>(CableActorClass, GetActorTransform()));
+			break;
+
+			case EPropertyChangeType::ValueSet :
+				{
+					if(!Cables.IsValidIndex(ChangedIndex) || Cables[ChangedIndex] == nullptr || ActorsToActivate[ChangedIndex] == nullptr)
+					{
+						return;
+					}
+				
+					ARSplineActor* Cable = Cables[ChangedIndex];
+					Cable->ClearNodes();
+					FVector EndPosition = ActorsToActivate[ChangedIndex]->GetActorLocation();
+					float Dist = FVector::Dist(GetActorLocation(), EndPosition);
+					int NodeCount = Dist/Cable->NodeDistance;
+
+					FVector Direction = EndPosition - GetActorLocation();
+					Direction.Normalize();
+					Cable->AddNode(GetActorLocation());
+					for(int i = 0; i < NodeCount; i++)
+					{
+						Cable->AddNode(GetActorLocation() + Direction*Cable->NodeDistance*(i+1));
+					}
+					Cable->AddNode(EndPosition);
+					Cable->UpdateSpline();
+				}
+			break;
+
+			case EPropertyChangeType::ArrayRemove:
+				if(!Cables.IsValidIndex(ChangedIndex))
+				{
+					return;
+				}
+
+				if(Cables[ChangedIndex])
+				{
+					Cables[ChangedIndex]->Destroy();
+				}
+
+				Cables.RemoveAt(ChangedIndex);
+			break;
+
+			case EPropertyChangeType::ArrayClear:
+				if(!Cables.IsValidIndex(ChangedIndex) || Cables[ChangedIndex] == nullptr)
+				{
+					return;
+				}
+
+				for (auto Cable : Cables)
+				{
+					Cable->Destroy();
+				}
+			break;
+			
+			default:
+				UE_LOG(LogTemp,Warning,TEXT("ARProjectileButton::PostEditChangeProperty unhandled case for cable"))
+			break;
+		}
+	}
+}
+
 // Called every frame
 void ARProjectileButton::Tick(float DeltaTime)
 {

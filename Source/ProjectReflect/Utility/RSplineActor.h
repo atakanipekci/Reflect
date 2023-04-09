@@ -11,9 +11,11 @@
 
 UENUM(BlueprintType)
 enum class ESplineMeshType: uint8 {
-  Default    UMETA(DisplayName = "Default Mesh"),
-  Start    UMETA(DisplayName = "Starting Mesh"),
-  End      UMETA(DisplayName = "Ending Mesh"),
+
+	None    UMETA(DisplayName = "None (Shouldn't be set to this"),
+	Default    UMETA(DisplayName = "Default Mesh"),
+	Start    UMETA(DisplayName = "Starting Mesh"),
+	End      UMETA(DisplayName = "Ending Mesh"),
 };
 
 USTRUCT(BlueprintType)
@@ -50,7 +52,7 @@ public:
 	void UpdateSpline();
 
 	/** Actual Spline component that this class provides functionalities for */
-	UPROPERTY(VisibleAnywhere, Category = "Spline")
+	UPROPERTY(EditAnywhere, Category = "Spline")
 	USplineComponent* SplineComponent;
 
 	/** Map data that is used to visualize the spline with correct mesh and materials */
@@ -59,4 +61,12 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Spline")
 	int NodeCount = 3;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Spline")
+	float NodeDistance = 50.f;
+
+private:
+
+	UPROPERTY(EditAnywhere)
+	USceneComponent* Root;
 };

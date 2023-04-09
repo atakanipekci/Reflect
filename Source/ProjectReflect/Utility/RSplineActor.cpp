@@ -7,22 +7,25 @@ ARSplineActor::ARSplineActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	Root = CreateDefaultSubobject<USceneComponent>("Root");
+	SetRootComponent(Root);
 	SplineComponent = CreateDefaultSubobject<USplineComponent>("Spline");
 	if(SplineComponent)
 	{
-		SetRootComponent(SplineComponent);  
+		SplineComponent->SetupAttachment(Root);
 	}
+
 }
 
 void ARSplineActor::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 	/** Create an Example Spline for preview purposes */
-	ClearNodes();
+	/*ClearNodes();
 	for(int i = 0; i < NodeCount; i++)
 	{
 		AddNode(FVector{static_cast<float>(i*200),0,0});
-	}
+	}*/
 	UpdateSpline();
 }
 
