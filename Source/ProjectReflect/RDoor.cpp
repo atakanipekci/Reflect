@@ -13,14 +13,10 @@ ARDoor::ARDoor()
 	SetRootComponent(SceneComponent);
 	
 	MovingPlatformComponent = CreateDefaultSubobject<URMovingPlatformComponent>(TEXT("Moving Platform Component"));
-	// MovingPlatformComponent->Relat
 	MovingPlatformComponent->SetupAttachment(SceneComponent);
-	// SetRootComponent(MovingPlatformComponent);
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	StaticMeshComponent->SetupAttachment(SceneComponent);
-	// SetRootComponent(StaticMeshComponent);
-	// MovingPlatformComponent->AttachToComponent(StaticMeshComponent, FAttachmentTransformRules::KeepWorldTransform);
 }
 
 // Called when the game starts or when spawned
