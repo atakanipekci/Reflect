@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <stdbool.h>
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ProjectReflect/Activatables/RIActivatable.h"
@@ -21,6 +23,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual bool Activate() override;
+	virtual bool Deactivate() override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -46,4 +49,6 @@ protected:
 
 	UPROPERTY()
 	TArray<ARSplineActor*> Cables;
+
+	bool bIsActivated = false;
 };

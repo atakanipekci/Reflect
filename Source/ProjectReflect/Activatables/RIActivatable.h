@@ -25,4 +25,7 @@ public:
 
 	UFUNCTION()
 	virtual bool Activate();
+
+	UFUNCTION()
+	virtual bool Deactivate();
 };

@@ -122,3 +122,19 @@ bool ARProjectileButton::Activate()
 	return bFlag;
 }
 
+bool ARProjectileButton::Deactivate()
+{
+	bool bFlag = false;
+	for (auto Actor : ActorsToActivate)
+	{
+		IRActivatable* Interactable = Cast<IRActivatable>(Actor);
+		if(Interactable)
+		{
+			Interactable->Deactivate();
+			bFlag = true;
+		}
+	}
+
+	return bFlag;
+}
+

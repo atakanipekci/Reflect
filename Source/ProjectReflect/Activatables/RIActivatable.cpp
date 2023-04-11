@@ -8,3 +8,8 @@ bool IRActivatable::Activate()
 {
 	return false;
 }
+
+bool IRActivatable::Deactivate()
+{
+	return false;
+}
