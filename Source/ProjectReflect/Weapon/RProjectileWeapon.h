@@ -19,7 +19,7 @@ public:
 	ARProjectileWeapon();
 	
 	UFUNCTION()
-	virtual void SpawnProjectile(FVector Location, FRotator Rotation) const;
+	virtual void SpawnProjectile(FVector Location, FRotator Rotation);
 
 	UFUNCTION()
 	void OnProjectileHit(AActor* OtherActor, const FHitResult& Hit);
@@ -34,4 +34,7 @@ public:
 
 	UPROPERTY()
 	class URProjectileTrajectoryComponent* TrajectoryComponent;
+
+	UPROPERTY()
+	class ARProjectile* LastFiredProjectile = nullptr;
 };

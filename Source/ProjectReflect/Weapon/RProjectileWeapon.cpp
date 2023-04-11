@@ -18,7 +18,7 @@ void ARProjectileWeapon::Shoot(FVector Location, FRotator Rotation)
 	SpawnProjectile(Location, Rotation);
 }
 
-void ARProjectileWeapon::SpawnProjectile(FVector Location, FRotator Rotation) const
+void ARProjectileWeapon::SpawnProjectile(FVector Location, FRotator Rotation)
 {
 	if (ProjectileClass)
 	{
@@ -29,7 +29,13 @@ void ARProjectileWeapon::SpawnProjectile(FVector Location, FRotator Rotation) co
 
 			if(const auto SpawnedProjectile = GetWorld()->SpawnActor<ARProjectile>(ProjectileClass, Location, Rotation, ActorSpawnParams))
 			{
+				if(LastFiredProjectile)
+				{
+					LastFiredProjectile->DestroyProjectile();
+				}
+				
 				SpawnedProjectile->OnProjectileHit.AddDynamic(this, &ARProjectileWeapon::OnProjectileHit);
+				LastFiredProjectile = SpawnedProjectile;
 			}
 		}
 	}
