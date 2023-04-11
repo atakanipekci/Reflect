@@ -18,6 +18,12 @@ class PROJECTREFLECT_API URMovingPlatformComponent : public USplineComponent
 public:
 
 	virtual void BeginPlay() override;
+	bool CanMove() const;
+	void ProcessMovement(float DeltaTime);
+	void UpdateTimer(float DeltaTime);
+	bool GetNewDirection(float Alpha, bool CurrentDirection) const;
+	void PlayForward(bool ResetPosition);
+	void PlayBackward(bool ResetPosition);
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY(EditAnywhere)
@@ -27,9 +33,18 @@ public:
 	bool bFollowRotation = false;
 	
 	UPROPERTY(EditAnywhere)
+	bool bLoop = false;
+
+	UPROPERTY(EditAnywhere)
+	bool bPlayAtStart = false;
+
+	UPROPERTY(EditAnywhere)
 	UCurveFloat* MoveCurve;
 
 private:
 	float Timer = 0.f;
+	int LoopCount;
 	bool bForward = true;
+	bool bActive = false;
+	
 };

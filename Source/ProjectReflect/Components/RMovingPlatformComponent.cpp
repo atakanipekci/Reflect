@@ -13,15 +13,25 @@ void URMovingPlatformComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+	bActive = bPlayAtStart;
 }
 
-void URMovingPlatformComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                              FActorComponentTickFunction* ThisTickFunction)
+bool URMovingPlatformComponent::CanMove() const
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	return bActive && (bLoop || !bLoop && LoopCount < 1);
+}
 
-	float Alpha = Timer/LapTime;
-	float DistanceAlpha = FMath::Lerp(0.f, GetSplineLength(), Alpha);
+void URMovingPlatformComponent::ProcessMovement(float DeltaTime)
+{
+	if(!CanMove())
+	{
+		//If completed one loop return
+		return;
+	}
+	
+	const float Alpha = Timer/LapTime;
+	const float DistanceAlpha = FMath::Lerp(0.f, GetSplineLength(), Alpha);
 
 	GetOwner()->SetActorLocation(GetLocationAtDistanceAlongSpline(DistanceAlpha, ESplineCoordinateSpace::World));
 
@@ -30,15 +40,25 @@ void URMovingPlatformComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 		GetOwner()->SetActorRotation(GetRotationAtDistanceAlongSpline(DistanceAlpha, ESplineCoordinateSpace::World));
 	}
 
-	if(FMath::IsNearlyEqual(Alpha, 1.f))
+	const auto NewDirection = GetNewDirection(Alpha, bForward);
+	if(NewDirection != bForward)
 	{
-		bForward = false;
+		LoopCount++;
+		bForward = NewDirection;
 	}
-	else if(FMath::IsNearlyEqual(Alpha, 0.f))
-	{
-		bForward = true;
-	}
+	
+	UpdateTimer(DeltaTime);
+}
 
+void URMovingPlatformComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	ProcessMovement(DeltaTime);
+}
+
+void URMovingPlatformComponent::UpdateTimer(float DeltaTime)
+{
 	if(bForward)
 	{
 		Timer = FMath::Min(Timer+DeltaTime, LapTime);
@@ -46,5 +66,41 @@ void URMovingPlatformComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	else
 	{
 		Timer = FMath::Max(0.f, Timer-DeltaTime);
+	}
+}
+
+bool URMovingPlatformComponent::GetNewDirection(const float Alpha, const bool CurrentDirection) const
+{
+	if(FMath::IsNearlyEqual(Alpha, 1.f))
+	{
+		return false;
+	}
+	if(FMath::IsNearlyEqual(Alpha, 0.f))
+	{
+		return true;
+	}
+
+	return CurrentDirection;
+}
+
+void URMovingPlatformComponent::PlayForward(const bool ResetPosition)
+{
+	bActive = true;
+	bForward = true;
+	LoopCount = 0;
+	if(ResetPosition)
+	{
+		Timer = 0;
+	}
+}
+
+void URMovingPlatformComponent::PlayBackward(const bool ResetPosition)
+{
+	bActive = true;
+	bForward = false;
+	LoopCount = 0;
+	if(ResetPosition)
+	{
+		Timer = LapTime;
 	}
 }
