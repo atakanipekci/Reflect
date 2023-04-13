@@ -20,6 +20,11 @@ class PROJECTREFLECT_API ARProjectile : public AActor, public IRTimeModifiable
 	ARProjectile();
 	
 protected:
+
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
+	
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
@@ -57,6 +62,10 @@ public:
 	UFUNCTION()
 	UProjectileMovementComponent* GetProjectileMovementComponent() const;
 
+	virtual void SetLifeSpan(float InLifespan) override;
+
+	void ResetLifeSpan() { SetLifeSpan(InitializedLifeSpan);}
+
 	UPROPERTY(EditAnywhere)
 	class URLevelComponent* LevelComponent;
 	
@@ -77,4 +86,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FProjectileStopDelegate OnProjectileStop;
+
+private:
+
+	float InitializedLifeSpan = 0.f;
+	FVector InitializedScale;
+
+	UPROPERTY()
+	UStaticMeshComponent* Mesh;
 };

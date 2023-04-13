@@ -10,6 +10,8 @@
 
 ARProjectile::ARProjectile() 
 {
+	PrimaryActorTick.bCanEverTick = true;
+	
 	InnerCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	InnerCollision->InitSphereRadius(25.0f);
 	InnerCollision->BodyInstance.SetCollisionProfileName(CollisionProfileNames::Projectile);
@@ -33,6 +35,34 @@ ARProjectile::ARProjectile()
 
 	LevelComponent = CreateDefaultSubobject<URLevelComponent>(TEXT("Level Component"));
 	LevelComponent->OnLevelUp.AddDynamic(this, &ARProjectile::OnLevelUp);
+}
+
+void ARProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Mesh = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
+	if(Mesh)
+	{
+		InitializedScale = Mesh->GetRelativeScale3D();
+	}
+}
+
+void ARProjectile::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if(InitializedLifeSpan <= 0)
+	{
+		return;
+	}
+	
+	if(Mesh)
+	{
+		float CurrentLife = GetLifeSpan();
+		float LifeTimeRatio = CurrentLife / InitializedLifeSpan;
+		Mesh->SetWorldScale3D(InitializedScale*LifeTimeRatio);
+	}
 }
 
 void ARProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -84,6 +114,8 @@ void ARProjectile::OnBounce(const FHitResult& ImpactResult, const FVector& Impac
 {
 	CurrentBounceCount++;
 	UE_LOG(LogStats, Log, TEXT("OnProjectile OnBounce %d"), CurrentBounceCount);
+
+	ResetLifeSpan();
 	
 	OnProjectileBounce.Broadcast(LastHitInteractorComponent, LastHitActor,ImpactResult, ImpactVelocity);
 	
@@ -125,6 +157,13 @@ float ARProjectile::GetRadius()
 UProjectileMovementComponent* ARProjectile::GetProjectileMovementComponent() const
 {
 	return ProjectileMovement;
+}
+
+void ARProjectile::SetLifeSpan(float InLifespan)
+{
+	Super::SetLifeSpan(InLifespan);
+
+	InitializedLifeSpan = InLifespan;
 }
 
 

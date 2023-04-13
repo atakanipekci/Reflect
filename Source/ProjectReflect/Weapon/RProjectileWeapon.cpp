@@ -35,6 +35,7 @@ void ARProjectileWeapon::SpawnProjectile(FVector Location, FRotator Rotation)
 				}
 				
 				SpawnedProjectile->OnProjectileHit.AddDynamic(this, &ARProjectileWeapon::OnProjectileHit);
+				SpawnedProjectile->SetLifeSpan(1.f);
 				LastFiredProjectile = SpawnedProjectile;
 			}
 		}
