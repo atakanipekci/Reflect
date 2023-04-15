@@ -3,6 +3,7 @@
 #include "RProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "ProjectReflect/Components/RDamageComponent.h"
 #include "ProjectReflect/Components/RLevelComponent.h"
 #include "ProjectReflect/Components/ProjectileInteractor/RProjectileInteractorComponent.h"
@@ -116,6 +117,11 @@ void ARProjectile::OnBounce(const FHitResult& ImpactResult, const FVector& Impac
 	UE_LOG(LogStats, Log, TEXT("OnProjectile OnBounce %d"), CurrentBounceCount);
 
 	ResetLifeSpan();
+
+	if(BounceSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), BounceSound, ImpactResult.Location, ImpactResult.ImpactNormal.Rotation(), 1, 1, 0, BounceSound->AttenuationSettings);
+	}
 	
 	OnProjectileBounce.Broadcast(LastHitInteractorComponent, LastHitActor,ImpactResult, ImpactVelocity);
 	
