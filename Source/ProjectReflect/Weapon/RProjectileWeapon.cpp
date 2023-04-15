@@ -1,7 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "RProjectileWeapon.h"
+
+#include "Components/DecalComponent.h"
+#include "Engine/DecalActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "ProjectReflect/Components/RProjectileTrajectoryComponent.h"
 #include "ProjectReflect/Projectile/RProjectile.h"
 
@@ -65,5 +69,18 @@ void ARProjectileWeapon::OnProjectileHit(AActor* OtherActor, const FHitResult& H
 	if(OtherActor != nullptr)
 	{
 		UE_LOG(LogStats, Log, TEXT("OnProjectileHit %s"), *OtherActor->GetName());
+
+		CreateDecal(OtherActor, Hit);
+	}
+}
+
+void ARProjectileWeapon::CreateDecal(AActor* Actor, const FHitResult& Hit)
+{
+	const auto Decal = GetWorld()->SpawnActor<ADecalActor>(Hit.Location, UKismetMathLibrary::MakeRotFromZ(Hit.Normal));
+	if (Decal)
+	{
+		Decal->SetDecalMaterial(DecalMaterial);
+		Decal->SetLifeSpan(5.0f);
+		Decal->GetDecal()->DecalSize = FVector(64.0f, 64.0f, 64.0f);
 	}
 }

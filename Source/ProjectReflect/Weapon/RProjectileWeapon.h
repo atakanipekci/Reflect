@@ -21,6 +21,7 @@ public:
 	UFUNCTION()
 	virtual void SpawnProjectile(FVector Location, FRotator Rotation);
 
+	void CreateDecal(AActor* Actor, const FHitResult& Hit);
 	UFUNCTION()
 	void OnProjectileHit(AActor* OtherActor, const FHitResult& Hit);
 
@@ -31,6 +32,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
 	TSubclassOf<class ARProjectile> ProjectileClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Projectile)
+	class UMaterialInterface* DecalMaterial;
 
 	UPROPERTY()
 	class URProjectileTrajectoryComponent* TrajectoryComponent;
