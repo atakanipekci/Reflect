@@ -25,6 +25,8 @@ public:
 	
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	virtual void FellOutOfWorld(const UDamageType& dmgType) override;
+
 	UFUNCTION()
 	virtual void Death();
 	

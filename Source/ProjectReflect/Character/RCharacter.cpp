@@ -24,6 +24,11 @@ float ARCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEven
 	return LifeComponent->TakeDamage(DamageAmount,DamageEvent, EventInstigator, DamageCauser);
 }
 
+void ARCharacter::FellOutOfWorld(const UDamageType& dmgType)
+{
+	Death();
+}
+
 void ARCharacter::Death()
 {
 	Destroy();
