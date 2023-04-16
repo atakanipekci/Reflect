@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ProjectReflect/Activatables/RActivatableCable.h"
 #include "ProjectReflect/Activatables/RIActivatable.h"
 #include "ProjectReflect/Utility/RSplineActor.h"
 #include "RProjectileButton.generated.h"
@@ -31,8 +32,6 @@ protected:
 	UFUNCTION()
 	void OnProjectileHit(class ARProjectile* Projectile, const FHitResult& Hit);
 
-private:
-
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 public:	
@@ -41,14 +40,14 @@ public:
 	TArray<AActor*> ActorsToActivate;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ARSplineActor> CableActorClass;
+	TSubclassOf<ARActivatableCable> CableActorClass;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class URProjectileInteractorComponent* ProjectileInteractionComponent;
 
 	UPROPERTY()
-	TArray<ARSplineActor*> Cables;
+	TArray<ARActivatableCable*> Cables;
 
 	bool bIsActivated = false;
 };

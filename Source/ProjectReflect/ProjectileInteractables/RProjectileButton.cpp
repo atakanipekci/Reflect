@@ -38,7 +38,11 @@ void ARProjectileButton::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 		switch(PropertyChangedEvent.ChangeType)
 		{
 			case EPropertyChangeType::ArrayAdd :
-				Cables.EmplaceAt(ChangedIndex, GetWorld()->SpawnActor<ARSplineActor>(CableActorClass, GetActorTransform()));
+				Cables.EmplaceAt(ChangedIndex, GetWorld()->SpawnActor<ARActivatableCable>(CableActorClass, GetActorTransform()));
+				if(Cables[ChangedIndex])
+				{
+					Cables[ChangedIndex]->ActivatableActor = ActorsToActivate[ChangedIndex];
+				}
 			break;
 
 			case EPropertyChangeType::ValueSet :
@@ -48,8 +52,12 @@ void ARProjectileButton::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 						return;
 					}
 				
-					ARSplineActor* Cable = Cables[ChangedIndex];
-					Cable->ClearNodes();
+					ARActivatableCable* Cable = Cables[ChangedIndex];
+					if(Cable)
+					{
+						Cable->ActivatableActor = ActorsToActivate[ChangedIndex];
+					}
+					/*Cable->ClearNodes();
 					FVector EndPosition = ActorsToActivate[ChangedIndex]->GetActorLocation();
 					float Dist = FVector::Dist(GetActorLocation(), EndPosition);
 					int NodeCount = Dist/Cable->NodeDistance;
@@ -62,7 +70,7 @@ void ARProjectileButton::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 						Cable->AddNode(GetActorLocation() + Direction*Cable->NodeDistance*(i+1));
 					}
 					Cable->AddNode(EndPosition);
-					Cable->UpdateSpline();
+					Cable->UpdateSpline();*/
 				}
 			break;
 
@@ -81,15 +89,14 @@ void ARProjectileButton::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 			break;
 
 			case EPropertyChangeType::ArrayClear:
-				if(!Cables.IsValidIndex(ChangedIndex) || Cables[ChangedIndex] == nullptr)
-				{
-					return;
-				}
-
 				for (auto Cable : Cables)
 				{
-					Cable->Destroy();
+					if(Cable)
+					{
+						Cable->Destroy();
+					}
 				}
+				Cables.Empty();
 			break;
 			
 			default:
@@ -109,13 +116,28 @@ void ARProjectileButton::Tick(float DeltaTime)
 bool ARProjectileButton::Activate()
 {
 	bool bFlag = false;
-	for (auto Actor : ActorsToActivate)
+
+	for(int i = 0; i < ActorsToActivate.Num(); i++)
 	{
-		IRActivatable* Interactable = Cast<IRActivatable>(Actor);
+		IRActivatable* Interactable = Cast<IRActivatable>(ActorsToActivate[i]);
+		if(Interactable)
+		{
+			bFlag = true;
+			//If there is an attached cable, let that cable activate the actor instead of activating immediately.
+			if(Cables.IsValidIndex(i) && Cables[i] != nullptr)
+			{
+				continue;
+			}
+			Interactable->Activate();
+		}
+	}
+
+	for (auto Cable : Cables)
+	{
+		IRActivatable* Interactable = Cast<IRActivatable>(Cable);
 		if(Interactable)
 		{
 			Interactable->Activate();
-			bFlag = true;
 		}
 	}
 
@@ -132,6 +154,15 @@ bool ARProjectileButton::Deactivate()
 		{
 			Interactable->Deactivate();
 			bFlag = true;
+		}
+	}
+
+	for (auto Cable : Cables)
+	{
+		IRActivatable* Interactable = Cast<IRActivatable>(Cable);
+		if(Interactable)
+		{
+			Interactable->Deactivate();
 		}
 	}
 
