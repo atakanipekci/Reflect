@@ -218,7 +218,10 @@ void ARPlayerCharacter::AlternateFire()
 
 void ARPlayerCharacter::HoldFire()
 {
-	bIsAiming = true;
+	if(AttachedWeapon && !AttachedWeapon->IsShootCooldownActive())
+	{
+		bIsAiming = true;
+	}
 }
 
 bool ARPlayerCharacter::IsSpawnPositionValid()
