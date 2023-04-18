@@ -62,6 +62,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* FireAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* FireReleasedAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* AlternateFireAction;
@@ -83,10 +86,12 @@ protected:
 	void GetSpawnPosAndRot(FVector& CamLoc, FRotator& CamRot) const;
 	void Fire();
 	void AlternateFire();
+	void HoldFire();
 	bool IsSpawnPositionValid();
 	void TryUpdateTrajectoryComponent();
 
 private:
 
-	
+	bool bIsAiming = false;
+	float AimTimer = 0.f;
 };

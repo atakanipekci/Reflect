@@ -71,6 +71,18 @@ void ARPlayerCharacter::BeginPlay()
 void ARPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if(bIsAiming)
+	{
+		AimTimer += DeltaTime;
+		if(AimTimer > 0.5f)
+		{
+			ShowTrajectory(true);
+		}
+	}
+	else
+	{
+		ShowTrajectory(false);
+	}
 	TryUpdateTrajectoryComponent();
 }
 
@@ -133,7 +145,9 @@ void ARPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ARPlayerCharacter::Look);
 
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &ARPlayerCharacter::Fire);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &ARPlayerCharacter::HoldFire);
+		
+		EnhancedInputComponent->BindAction(FireReleasedAction, ETriggerEvent::Triggered, this, &ARPlayerCharacter::Fire);
 		
 		EnhancedInputComponent->BindAction(AlternateFireAction, ETriggerEvent::Triggered, this, &ARPlayerCharacter::AlternateFire);
 	}
@@ -174,6 +188,9 @@ void ARPlayerCharacter::GetSpawnPosAndRot(FVector& CamLoc, FRotator& CamRot) con
 
 void ARPlayerCharacter::Fire()
 {
+	AimTimer = 0.f;
+	bIsAiming = false;
+	
 	if(!IsSpawnPositionValid()) return;
 	
 	if(AttachedWeapon && !AttachedWeapon->IsShootCooldownActive())
@@ -197,6 +214,11 @@ void ARPlayerCharacter::AlternateFire()
 	}
 	
 	TimeManipulatorComponent->ModifyTimeForSeconds(0.1f, 3.f);
+}
+
+void ARPlayerCharacter::HoldFire()
+{
+	bIsAiming = true;
 }
 
 bool ARPlayerCharacter::IsSpawnPositionValid()
