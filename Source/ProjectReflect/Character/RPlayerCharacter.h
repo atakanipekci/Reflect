@@ -23,6 +23,8 @@ public:
 	void AddDefaultMappingContext();
 	void ShowTrajectory(bool show);
 	void DebugShoot();
+
+	bool GetIsFiring() const { return bIsAiming; }
 	
 	//TODO GET Rid of these
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
