@@ -74,6 +74,7 @@ void ARProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrim
 		UE_LOG(LogStats, Log, TEXT("OnProjectile OnHit-->OtherActor is null"));
 	}
 
+	LastHitActor = OtherActor;
 	LastHitInteractorComponent = GetInteractorComponentFromActor(OtherActor);
 	TryInvokeInteractorComponent(LastHitInteractorComponent, Hit);
 	

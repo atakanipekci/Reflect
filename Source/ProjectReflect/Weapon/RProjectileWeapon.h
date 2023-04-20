@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "RWeapon.h"
 #include "Kismet/GameplayStaticsTypes.h"
+#include "ProjectReflect/Components/ProjectileInteractor/RProjectileInteractorComponent.h"
 #include "RProjectileWeapon.generated.h"
 
 /**
@@ -17,14 +18,12 @@ class PROJECTREFLECT_API ARProjectileWeapon : public ARWeapon
 	
 public:
 	ARProjectileWeapon();
-	
+
 	UFUNCTION()
+	void OnProjectileBounce(URProjectileInteractorComponent* LastHitInteractorComponent, AActor* HitActor, const FHitResult& ImpactResult, const FVector& ImpactVelocity);
+	UFUNCTION()
+
 	virtual void SpawnProjectile(FVector Location, FRotator Rotation);
-
-	void CreateDecal(AActor* Actor, const FHitResult& Hit);
-	UFUNCTION()
-	void OnProjectileHit(AActor* OtherActor, const FHitResult& Hit);
-
 	virtual void Shoot(FVector Location, FRotator Rotation) override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
@@ -38,6 +37,9 @@ public:
 
 	UPROPERTY()
 	class URProjectileTrajectoryComponent* TrajectoryComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	class URDecalCreatorComponent* DecalCreatorComponent;
 
 	UPROPERTY()
 	class ARProjectile* LastFiredProjectile = nullptr;

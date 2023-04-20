@@ -6,12 +6,14 @@
 #include "Engine/DecalActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "ProjectReflect/RDecalCreatorComponent.h"
 #include "ProjectReflect/Components/RProjectileTrajectoryComponent.h"
 #include "ProjectReflect/Projectile/RProjectile.h"
 
 ARProjectileWeapon::ARProjectileWeapon()
 {
 	TrajectoryComponent = CreateDefaultSubobject<URProjectileTrajectoryComponent>(TEXT("Trajectory Component"));
+	DecalCreatorComponent = CreateDefaultSubobject<URDecalCreatorComponent>(TEXT("DecalCreatorComponent"));
 }
 
 void ARProjectileWeapon::Shoot(FVector Location, FRotator Rotation)
@@ -38,7 +40,7 @@ void ARProjectileWeapon::SpawnProjectile(FVector Location, FRotator Rotation)
 					LastFiredProjectile->DestroyProjectile();
 				}
 				
-				SpawnedProjectile->OnProjectileHit.AddDynamic(this, &ARProjectileWeapon::OnProjectileHit);
+				SpawnedProjectile->OnProjectileBounce.AddDynamic(this, &ARProjectileWeapon::OnProjectileBounce);
 				SpawnedProjectile->SetLifeSpan(1.f);
 				LastFiredProjectile = SpawnedProjectile;
 			}
@@ -64,23 +66,17 @@ void ARProjectileWeapon::DrawTrajectory(FVector SpawnPos, FVector Dir, TArray<TO
 	TrajectoryComponent->DrawTrajectory(SpawnPos, Dir, Cast<ARProjectile>(ProjectileClass.GetDefaultObject()), ActorsToIgnore, MuzzleLocation);
 }
 
-void ARProjectileWeapon::OnProjectileHit(AActor* OtherActor, const FHitResult& Hit)
+void ARProjectileWeapon::OnProjectileBounce(URProjectileInteractorComponent* LastHitInteractorComponent, AActor* HitActor, const FHitResult& ImpactResult, const FVector& ImpactVelocity)
 {
-	if(OtherActor != nullptr)
+	if(HitActor != nullptr)
 	{
-		UE_LOG(LogStats, Log, TEXT("OnProjectileHit %s"), *OtherActor->GetName());
+		UE_LOG(LogStats, Log, TEXT("OnProjectileHit %s"), *HitActor->GetName());
 
-		CreateDecal(OtherActor, Hit);
+		if(DecalCreatorComponent)
+		{
+			DecalCreatorComponent->CreateDecal(HitActor, ImpactResult);
+		}
 	}
 }
 
-void ARProjectileWeapon::CreateDecal(AActor* Actor, const FHitResult& Hit)
-{
-	const auto Decal = GetWorld()->SpawnActor<ADecalActor>(Hit.Location, UKismetMathLibrary::MakeRotFromZ(Hit.Normal));
-	if (Decal)
-	{
-		Decal->SetDecalMaterial(DecalMaterial);
-		Decal->SetLifeSpan(5.0f);
-		Decal->GetDecal()->DecalSize = FVector(64.0f, 64.0f, 64.0f);
-	}
-}
+
