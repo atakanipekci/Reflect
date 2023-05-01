@@ -21,7 +21,7 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex);
 
-	virtual bool Activate() override;
+	virtual bool IActivate() override;
 
 	UPROPERTY()
 	TArray<class ARCharacter*> CharactersToLaunch;

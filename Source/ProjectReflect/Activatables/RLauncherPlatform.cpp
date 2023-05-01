@@ -22,7 +22,7 @@ ARLauncherPlatform::ARLauncherPlatform()
 	SetRootComponent(BoxComponent);
 }
 
-bool ARLauncherPlatform::Activate()
+bool ARLauncherPlatform::IActivate()
 {
 	bool bFlag = false;
 	for (const auto Character : CharactersToLaunch)
@@ -48,7 +48,7 @@ void ARLauncherPlatform::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 
 	if(ActivateOnOverlap)
 	{
-		Activate();
+		IActivate();
 	}
 
 	// if (OtherComp->IsSimulatingPhysics())

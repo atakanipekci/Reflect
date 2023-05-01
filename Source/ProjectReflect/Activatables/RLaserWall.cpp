@@ -124,7 +124,7 @@ void ARLaserWall::Toggle()
 	bActive = !bActive;
 }
 
-bool ARLaserWall::Activate()
+bool ARLaserWall::IActivate()
 {
 	Toggle();
 	return true;

@@ -57,6 +57,18 @@ void URMovingPlatformComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	ProcessMovement(DeltaTime);
 }
 
+bool URMovingPlatformComponent::IActivate()
+{
+	PlayForward(false);
+	return true;
+}
+
+bool URMovingPlatformComponent::IDeactivate()
+{
+	PlayBackward(false);
+	return true;
+}
+
 void URMovingPlatformComponent::UpdateTimer(float DeltaTime)
 {
 	if(bForward)

@@ -3,18 +3,18 @@
 
 #include "RSingleUseButton.h"
 
-bool ARSingleUseButton::Activate()
+bool ARSingleUseButton::IActivate()
 {
 	if(bIsActivated == false)
 	{
 		bIsActivated = true;
-		return Super::Activate();
+		return Super::IActivate();
 	}
 
 	return false;
 }
 
-bool ARSingleUseButton::Deactivate()
+bool ARSingleUseButton::IDeactivate()
 {
 	return false;
 }

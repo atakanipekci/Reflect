@@ -20,9 +20,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual bool Activate() override;
+	virtual bool IActivate() override;
 
-	virtual bool Deactivate() override;
+	virtual bool IDeactivate() override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual bool TryActivatingAttachedActor();

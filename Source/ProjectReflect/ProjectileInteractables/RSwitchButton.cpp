@@ -3,21 +3,21 @@
 
 #include "RSwitchButton.h"
 
-bool ARSwitchButton::Activate()
+bool ARSwitchButton::IActivate()
 {
 	if(bIsActivated)
 	{
 		bIsActivated = false;
-		return Super::Deactivate();
+		return Super::IDeactivate();
 	}
 	else
 	{
 		bIsActivated = true;
-		return Super::Activate();
+		return Super::IActivate();
 	}
 }
 
-bool ARSwitchButton::Deactivate()
+bool ARSwitchButton::IDeactivate()
 {
 	return false;
 }

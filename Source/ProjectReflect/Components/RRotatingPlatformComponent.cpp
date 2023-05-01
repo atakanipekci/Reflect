@@ -36,7 +36,14 @@ void URRotatingPlatformComponent::TickComponent(float DeltaTime, ELevelTick Tick
 
 	float Alpha = Timer/LapTime;
 
-	GetOwner()->SetActorRotation(FMath::Lerp(DefaultRotation, TargetRotation, Alpha));
+	FRotator Target = TargetRotation;
+
+	if(bAdditive)
+	{
+		Target = DefaultRotation + TargetRotation;
+	}
+
+	GetOwner()->SetActorRotation(FMath::Lerp(DefaultRotation, Target, Alpha));
 
 	UpdateTimer(DeltaTime);
 
@@ -99,6 +106,18 @@ void URRotatingPlatformComponent::PlayBackward(const bool ResetPosition)
 	{
 		Timer = LapTime;
 	}
+}
+
+bool URRotatingPlatformComponent::IActivate()
+{
+	PlayForward(false);
+	return true;
+}
+
+bool URRotatingPlatformComponent::IDeactivate()
+{
+	PlayBackward(false);
+	return true;
 }
 
 

@@ -24,7 +24,7 @@ void ARProjectileButton::BeginPlay()
 
 void ARProjectileButton::OnProjectileHit(ARProjectile* Projectile, const FHitResult& Hit)
 {
-	Activate();
+	IActivate();
 }
 
 void ARProjectileButton::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
@@ -113,7 +113,7 @@ void ARProjectileButton::Tick(float DeltaTime)
 
 }
 
-bool ARProjectileButton::Activate()
+bool ARProjectileButton::IActivate()
 {
 	bool bFlag = false;
 
@@ -128,7 +128,7 @@ bool ARProjectileButton::Activate()
 			{
 				continue;
 			}
-			Interactable->Activate();
+			Interactable->IActivate();
 		}
 	}
 
@@ -137,14 +137,14 @@ bool ARProjectileButton::Activate()
 		IRActivatable* Interactable = Cast<IRActivatable>(Cable);
 		if(Interactable)
 		{
-			Interactable->Activate();
+			Interactable->IActivate();
 		}
 	}
 
 	return bFlag;
 }
 
-bool ARProjectileButton::Deactivate()
+bool ARProjectileButton::IDeactivate()
 {
 	bool bFlag = false;
 	for (auto Actor : ActorsToActivate)
@@ -152,7 +152,7 @@ bool ARProjectileButton::Deactivate()
 		IRActivatable* Interactable = Cast<IRActivatable>(Actor);
 		if(Interactable)
 		{
-			Interactable->Deactivate();
+			Interactable->IDeactivate();
 			bFlag = true;
 		}
 	}
@@ -162,7 +162,7 @@ bool ARProjectileButton::Deactivate()
 		IRActivatable* Interactable = Cast<IRActivatable>(Cable);
 		if(Interactable)
 		{
-			Interactable->Deactivate();
+			Interactable->IDeactivate();
 		}
 	}
 

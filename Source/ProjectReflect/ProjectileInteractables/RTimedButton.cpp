@@ -3,15 +3,15 @@
 
 #include "RTimedButton.h"
 
-bool ARTimedButton::Activate()
+bool ARTimedButton::IActivate()
 {
 	Timer = DeactivationTime;
-	return Super::Activate();
+	return Super::IActivate();
 }
 
-bool ARTimedButton::Deactivate()
+bool ARTimedButton::IDeactivate()
 {
-	return Super::Deactivate();
+	return Super::IDeactivate();
 }
 
 void ARTimedButton::Tick(float DeltaSeconds)
@@ -23,7 +23,7 @@ void ARTimedButton::Tick(float DeltaSeconds)
 		Timer -= DeltaSeconds;
 		if(Timer <= 0.f)
 		{
-			Deactivate();
+			IDeactivate();
 		}
 	}
 }

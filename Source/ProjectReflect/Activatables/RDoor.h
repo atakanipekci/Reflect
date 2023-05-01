@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Activatables/RIActivatable.h"
+#include "RIActivatable.h"
 #include "GameFramework/Actor.h"
 #include "RDoor.generated.h"
 
@@ -21,8 +21,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	virtual bool Activate() override;
-	virtual bool Deactivate() override;
+	virtual bool IActivate() override;
+	virtual bool IDeactivate() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class USceneComponent* SceneComponent;

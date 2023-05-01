@@ -20,7 +20,7 @@ void ARDestructibleActor::PostInitProperties()
 	Super::PostInitProperties();
 }
 
-bool ARDestructibleActor::Activate()
+bool ARDestructibleActor::IActivate()
 {
 	Explode(GetActorLocation());
 	return true;

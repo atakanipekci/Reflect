@@ -11,14 +11,14 @@ ARActivatableCable::ARActivatableCable()
 
 }
 
-bool ARActivatableCable::Activate()
+bool ARActivatableCable::IActivate()
 {
 	ActivateCable(true);
 	bIsActive = true;
 	return true;
 }
 
-bool ARActivatableCable::Deactivate()
+bool ARActivatableCable::IDeactivate()
 {
 	ActivateCable(false);
 	bIsActive = false;
@@ -29,7 +29,7 @@ bool ARActivatableCable::TryActivatingAttachedActor()
 {
 	if(IRActivatable* Activatable = Cast<IRActivatable>(ActivatableActor))
 	{
-		Activatable->Activate();
+		Activatable->IActivate();
 		return true;
 	}
 

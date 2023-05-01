@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "ProjectReflect/Activatables/RIActivatable.h"
 #include "RRotatingPlatformComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROJECTREFLECT_API URRotatingPlatformComponent : public UActorComponent
+class PROJECTREFLECT_API URRotatingPlatformComponent : public UActorComponent, public IRActivatable
 {
 	GENERATED_BODY()
 
@@ -28,6 +29,9 @@ public:
 	void PlayForward(bool ResetPosition);
 	void PlayBackward(bool ResetPosition);
 
+	virtual bool IActivate() override;
+	virtual bool IDeactivate() override;
+
 	UPROPERTY(EditAnywhere)
 	FRotator TargetRotation;
 	
@@ -39,6 +43,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	bool bPlayAtStart = false;
+
+	//Whether the target rotation is absolute world rotation or it should be used as relative rotation by adding it to the default rotation
+	UPROPERTY(EditAnywhere)
+	bool bAdditive = false;
 
 protected:
 	UPROPERTY()

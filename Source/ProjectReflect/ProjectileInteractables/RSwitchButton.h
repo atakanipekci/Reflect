@@ -16,7 +16,7 @@ class PROJECTREFLECT_API ARSwitchButton : public ARProjectileButton
 
 public:
 
-	virtual bool Activate() override;
-	virtual bool Deactivate() override;
+	virtual bool IActivate() override;
+	virtual bool IDeactivate() override;
 
 };

@@ -24,7 +24,7 @@ public:
 
 	void Toggle();
 
-	virtual bool Activate() override;
+	virtual bool IActivate() override;
 	
 protected:
 	// Called when the game starts or when spawned

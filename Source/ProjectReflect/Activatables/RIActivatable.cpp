@@ -4,12 +4,12 @@
 #include "RIActivatable.h"
 
 // Add default functionality here for any IRActivatable functions that are not pure virtual.
-bool IRActivatable::Activate()
+bool IRActivatable::IActivate()
 {
 	return false;
 }
 
-bool IRActivatable::Deactivate()
+bool IRActivatable::IDeactivate()
 {
 	return false;
 }

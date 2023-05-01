@@ -30,7 +30,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void Explode(const FVector& HitAt);
 
-	virtual bool Activate() override;
+	virtual bool IActivate() override;
 
 protected:
 	// Called when the game starts or when spawned

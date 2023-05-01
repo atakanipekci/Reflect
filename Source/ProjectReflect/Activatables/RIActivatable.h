@@ -24,8 +24,8 @@ class PROJECTREFLECT_API IRActivatable
 public:
 
 	UFUNCTION()
-	virtual bool Activate();
+	virtual bool IActivate();
 
 	UFUNCTION()
-	virtual bool Deactivate();
+	virtual bool IDeactivate();
 };

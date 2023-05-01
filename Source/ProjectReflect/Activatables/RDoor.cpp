@@ -3,8 +3,8 @@
 
 #include "RDoor.h"
 
-#include "Components/BoxComponent.h"
-#include "Components/RMovingPlatformComponent.h"
+#include "ProjectReflect/Components/RMovingPlatformComponent.h"
+#include "ProjectReflect/Utility/RActivatablesLibrary.h"
 
 // Sets default values
 ARDoor::ARDoor()
@@ -26,15 +26,15 @@ void ARDoor::BeginPlay()
 	
 }
 
-bool ARDoor::Activate()
+bool ARDoor::IActivate()
 {
-	MovingPlatformComponent->PlayForward(false);
+	URActivatablesLibrary::ActivateAllComponents(this);
 	return true;
 }
 
-bool ARDoor::Deactivate()
+bool ARDoor::IDeactivate()
 {
-	MovingPlatformComponent->PlayBackward(false);
+	URActivatablesLibrary::ActivateAllComponents(this, true);
 	return true;
 }
 
