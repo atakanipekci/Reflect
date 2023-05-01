@@ -2,6 +2,7 @@
 
 #include "RProjectileReflector.h"
 #include "ProjectReflect/Components/ProjectileInteractor/RProjectileInteractorComponent.h"
+#include "ProjectReflect/Utility/RActivatablesLibrary.h"
 
 
 ARProjectileReflector::ARProjectileReflector()
@@ -18,5 +19,17 @@ ARProjectileReflector::ARProjectileReflector()
 
 void ARProjectileReflector::OnProjectileHit(ARProjectile* Projectile, const FHitResult& Hit)
 {
+}
+
+bool ARProjectileReflector::IActivate()
+{
+	URActivatablesLibrary::ActivateAllComponents(this);
+	return true;
+}
+
+bool ARProjectileReflector::IDeactivate()
+{
+	URActivatablesLibrary::ActivateAllComponents(this, true);
+	return true;
 }
 
